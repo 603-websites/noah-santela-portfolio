@@ -7,7 +7,8 @@
   /* ---------- Collection data ---------- */
   var PIECES = [
     {
-      img: "images/float/smoked-whiskey.png",
+      img: "images/float/smoked-whiskey-1.png",
+      imgs: ["images/float/smoked-whiskey-1.png", "images/float/smoked-whiskey-2.png", "images/float/smoked-whiskey-3.png"],
       name: "Smoked Whiskey",
       desc: "A whiskey-warm Red Jasper cabochon cradled in a hand-engraved silver cuff, scrollwork curling down each shoulder like wisps of smoke.",
       mat: "Sterling · Red Jasper"
@@ -36,6 +37,31 @@
     return path;
   }
 
+  /* ---------- piece media (single image or multi-photo carousel) ---------- */
+  function mediaMarkup(p, cls) {
+    if (p.imgs && p.imgs.length > 1) {
+      var frames = p.imgs.map(function (src, i) {
+        return '<img class="carousel__frame float-img' + (i === 0 ? ' is-on' : '') + '" src="' + res(src) + '" alt="' + p.name + '" draggable="false" />';
+      }).join('');
+      return '<div class="' + cls + ' carousel" data-carousel>' + frames + '</div>';
+    }
+    return '<img class="' + cls + ' float-img" src="' + res(p.img) + '" alt="' + p.name + '" draggable="false" />';
+  }
+  function startCarousel(el) {
+    var frames = el.querySelectorAll('.carousel__frame');
+    if (frames.length < 2 || prefersReducedMotion) return;
+    var i = 0;
+    el.__carInt = setInterval(function () {
+      frames[i].classList.remove('is-on');
+      i = (i + 1) % frames.length;
+      frames[i].classList.add('is-on');
+    }, 2600);
+  }
+  function stopCarousel(el) { if (el && el.__carInt) { clearInterval(el.__carInt); el.__carInt = null; } }
+  function initCarouselsIn(root) {
+    Array.prototype.forEach.call(root.querySelectorAll('[data-carousel]'), startCarousel);
+  }
+
   /* ---------- Horizontal slider (seamless loop) ---------- */
   function buildSlider() {
     var track = document.getElementById("track");
@@ -46,7 +72,7 @@
     function slideHTML(p, i, clone) {
       return '<article class="slide" data-piece="' + i + '"' + (clone ? ' data-clone="1" aria-hidden="true"' : ' data-screen-label="piece-' + (i + 1) + '"') + '>' +
         '<div class="slide__stage">' +
-          '<img class="slide__img float-img" src="' + res(p.img) + '" alt="' + p.name + '" draggable="false" />' +
+          mediaMarkup(p, 'slide__img') +
           '<span class="slide__shimmer"></span>' +
         '</div>' +
         '<div class="slide__body">' +
@@ -62,6 +88,7 @@
     for (var i = 0; i < N; i++) html += slideHTML(PIECES[i], i, false);
     html += slideHTML(PIECES[0], 0, true);
     track.innerHTML = html;
+    initCarouselsIn(track);
 
     var slides = Array.prototype.slice.call(track.children);
     var dotsWrap = slider.querySelector(".slider-dots");
@@ -172,8 +199,24 @@
       var P = window.__pieces || PIECES;
       var p = P[idx]; if (!p) return;
       current = p;
-      imgEl.src = res(p.img);
-      imgEl.alt = p.name;
+      var mediaEl = m.querySelector('.modal__media');
+      var prevCar = mediaEl.querySelector('.carousel');
+      if (prevCar) { stopCarousel(prevCar); prevCar.remove(); }
+      if (p.imgs && p.imgs.length > 1) {
+        imgEl.style.display = 'none';
+        var car = document.createElement('div');
+        car.className = 'modal__img carousel';
+        car.setAttribute('data-carousel', '');
+        car.innerHTML = p.imgs.map(function (src, i) {
+          return '<img class="carousel__frame float-img' + (i === 0 ? ' is-on' : '') + '" src="' + res(src) + '" alt="' + p.name + '">';
+        }).join('');
+        mediaEl.appendChild(car);
+        startCarousel(car);
+      } else {
+        imgEl.style.display = '';
+        imgEl.src = res(p.img);
+        imgEl.alt = p.name;
+      }
       nameEl.textContent = p.name;
       descEl.textContent = p.desc;
       m.hidden = false;
@@ -183,6 +226,9 @@
       document.body.style.overflow = "hidden";
     };
     function close() {
+      var car = m.querySelector('.modal__media .carousel');
+      if (car) { stopCarousel(car); car.remove(); }
+      if (imgEl) imgEl.style.display = '';
       m.classList.remove("open");
       document.body.classList.remove("modal-open");
       document.body.style.overflow = "";

@@ -273,6 +273,18 @@ img{ display: block; max-width: 100%; }
   will-change: transform;
 }
 
+/* ---------- multi-photo piece carousel (auto-crossfade) ---------- */
+.carousel{ position: relative; }
+.slide__img.carousel{ width: 84%; height: 92%; }
+.modal__img.carousel{ width: 90%; height: 60vh; }
+.carousel__frame{
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: contain;
+  opacity: 0; transition: opacity .9s ease;
+}
+.carousel__frame.is-on{ opacity: 1; }
+
 /* ---------- horizontal slider ---------- */
 .slider{
   position: relative;
