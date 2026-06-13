@@ -1,5 +1,5 @@
 /* =========================================================
-   Noah Santela — interactions
+   Noah Santella  -  interactions
    ========================================================= */
 (function () {
   "use strict";
@@ -27,7 +27,7 @@
     {
       img: "images/float/labradorite-scroll.png",
       name: "Deep Shade",
-      desc: "Scrollwork curls around the cabochon like rising smoke — a study in light and shadow.",
+      desc: "Scrollwork curls around the cabochon like rising smoke  -  a study in light and shadow.",
       mat: "Sterling · Labradorite"
     },
     {
@@ -129,7 +129,7 @@
 
     track.addEventListener("transitionend", function (e) {
       // ignore transitions that bubbled up from child elements (e.g. the
-      // active slide's stage scaling) — only the track's own slide movement
+      // active slide's stage scaling)  -  only the track's own slide movement
       // should trigger the seamless loop reset.
       if (e.target !== track || e.propertyName !== "transform") return;
       normalize();
@@ -137,7 +137,7 @@
 
     // autoplay (5s), pause on hover / when a modal is open
     var paused = false, timer = null;
-    function play() { clearInterval(timer); timer = setInterval(function () { if (!paused && !document.body.classList.contains("modal-open")) go(1); }, 5000); }
+    function play() { clearInterval(timer); timer = setInterval(function () { if (!paused && !document.body.classList.contains("modal-open")) go(1); }, 2500); }
     function bump() { play(); }
     slider.addEventListener("pointerenter", function () { paused = true; });
     slider.addEventListener("pointerleave", function () { paused = false; });
@@ -219,7 +219,7 @@
       "",
       v.message || ""
     ].filter(function (x) { return x !== null; });
-    var href = "mailto:noahsantela@gmail.com?subject=" + encodeURIComponent(subject) +
+    var href = "mailto:noahsantella@gmail.com?subject=" + encodeURIComponent(subject) +
       "&body=" + encodeURIComponent(lines.join("\n"));
     window.location.href = href;
   }
@@ -399,7 +399,7 @@
     reveals();
     smoothLinks();
     setupForm(document.getElementById("inquiry"), function (vals) {
-      sendMail("Commission inquiry — Noah Santela", vals);
+      sendMail("Commission inquiry  -  Noah Santella", vals);
     });
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
