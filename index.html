@@ -8,14 +8,32 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css" />
-<!-- collection images referenced as strings in script.js (lifted for standalone bundling) -->
-<meta name="ext-resource-dependency" content="images/azurite-detail.jpg" data-resource-id="azurite-detail" />
-<meta name="ext-resource-dependency" content="images/labradorite-detail.jpg" data-resource-id="labradorite-detail" />
-<meta name="ext-resource-dependency" content="images/azurite-bust.jpg" data-resource-id="azurite-bust" />
-<meta name="ext-resource-dependency" content="images/labradorite-side.jpg" data-resource-id="labradorite-side" />
-<meta name="ext-resource-dependency" content="images/labradorite-rope.jpg" data-resource-id="labradorite-rope" />
+<!-- floating PNGs referenced as strings in script.js (lifted for standalone bundling) -->
+<meta name="ext-resource-dependency" content="images/float/azurite-feathers.png" data-resource-id="azurite-feathers" />
+<meta name="ext-resource-dependency" content="images/float/labradorite-baroque.png" data-resource-id="labradorite-baroque" />
+<meta name="ext-resource-dependency" content="images/float/azurite-oval.png" data-resource-id="azurite-oval" />
+<meta name="ext-resource-dependency" content="images/float/labradorite-scroll.png" data-resource-id="labradorite-scroll" />
+<meta name="ext-resource-dependency" content="images/float/labradorite-rope.png" data-resource-id="labradorite-rope" />
 </head>
 <body>
+
+<div class="site-atmosphere" aria-hidden="true">
+  <div class="site-atmosphere__iris"></div>
+  <div class="site-atmosphere__glow"></div>
+  <div class="site-atmosphere__vignette"></div>
+  <div class="site-atmosphere__grain"></div>
+</div>
+
+<!-- ================= NAV ================= -->
+<nav class="nav" id="nav">
+  <a href="#top" class="nav__brand"><b>Noah</b> Santela</a>
+  <div class="nav__links">
+    <a href="#collection">Collection</a>
+    <a href="#repairs">Repairs</a>
+    <a href="about.html">About</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
 
 <!-- ================= HERO ================= -->
 <header class="hero" id="top">
@@ -25,12 +43,12 @@
   <div class="hero__grain" aria-hidden="true"></div>
 
   <div class="hero__inner">
-    <p class="eyebrow reveal" data-screen-label="hero-eyebrow">Atelier · MMXXVI</p>
+    <p class="eyebrow reveal" data-screen-label="hero-eyebrow">Handcrafted in Sterling Silver</p>
     <h1 class="hero__title reveal">
       <span class="hero__name-line">Noah</span>
       <span class="hero__name-line hero__name-line--accent">Santela</span>
     </h1>
-    <p class="hero__tagline reveal">Lux in lapide quiescit — artificis manu evocata.</p>
+    <p class="hero__tagline reveal">Forged by hand, set with natural stone — one piece at a time.</p>
     <a href="#collection" class="btn btn--glow reveal" data-scroll>
       <span>View Collection</span>
     </a>
@@ -45,23 +63,24 @@
 <!-- rope divider -->
 <div class="rope" role="separator" aria-hidden="true"><i class="rope__gem"></i></div>
 
-<!-- ================= COLLECTION ================= -->
-<section class="collection" id="collection">
+<!-- ================= SANTELLA ORIGINALS ================= -->
+<section class="collection" id="collection" data-screen-label="santella-originals">
   <div class="section-head reveal">
-    <p class="eyebrow">Collectio · I</p>
-    <h2 class="section-title">The Collection</h2>
-    <p class="section-sub">Singulae res, manu factae. Quinque opera ex argento et lapide nato.</p>
+    <p class="eyebrow">The Collection</p>
+    <h2 class="section-title">Santella Originals</h2>
+    <p class="section-sub">One-of-a-kind pieces, each handcrafted by Noah in sterling silver and natural stone.</p>
   </div>
 
-  <div class="carousel-stage reveal">
-    <div class="carousel-spot" aria-hidden="true"></div>
-    <div class="carousel" id="carousel">
-      <!-- cards injected by script.js -->
+  <div class="slider reveal" id="slider">
+    <div class="slider__viewport">
+      <div class="slider__track no-tween" id="track">
+        <!-- slides injected by script.js -->
+      </div>
     </div>
-    <div class="carousel-controls" aria-hidden="true">
-      <button class="carousel-arrow" data-dir="-1" aria-label="Previous piece">&#8249;</button>
-      <div class="carousel-dots"></div>
-      <button class="carousel-arrow" data-dir="1" aria-label="Next piece">&#8250;</button>
+    <div class="slider-controls">
+      <button class="slider-arrow" data-dir="-1" aria-label="Previous piece">&#8249;</button>
+      <div class="slider-dots" aria-hidden="true"></div>
+      <button class="slider-arrow" data-dir="1" aria-label="Next piece">&#8250;</button>
     </div>
   </div>
 </section>
@@ -69,33 +88,22 @@
 <!-- rope divider -->
 <div class="rope" role="separator" aria-hidden="true"><i class="rope__gem"></i></div>
 
-<!-- ================= ABOUT ================= -->
-<section class="about" id="about">
-  <div class="about__media reveal">
-    <div class="about__frame">
-      <img src="images/labradorite-side.jpg" alt="Pendant resting on dark patinated surface" loading="lazy" />
-      <span class="about__media-tag">In officina</span>
-    </div>
+<!-- ================= REPAIRS & RESTORATION ================= -->
+<section class="repairs" id="repairs" data-screen-label="repairs">
+  <div class="repairs__media reveal">
+    <img class="repairs__img float-img" src="images/float/labradorite-scroll.png" alt="Restored silver and labradorite pendant" loading="lazy" />
   </div>
-  <div class="about__body reveal">
-    <p class="eyebrow">De Artifice</p>
-    <h2 class="section-title section-title--left">An obsession with<br />light and stone.</h2>
-    <p class="about__lead">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-    <p class="about__text">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat.</p>
-    <ul class="trust">
-      <li class="trust__item">
-        <span class="trust__mark" aria-hidden="true"><i class="ico ico--hammer"></i></span>
-        <span class="trust__label">Handcrafted</span>
-      </li>
-      <li class="trust__item">
-        <span class="trust__mark" aria-hidden="true"><i class="ico ico--diamond"></i></span>
-        <span class="trust__label">Sterling Silver</span>
-      </li>
-      <li class="trust__item">
-        <span class="trust__mark" aria-hidden="true"><i class="ico ico--stone"></i></span>
-        <span class="trust__label">Natural Stones</span>
-      </li>
+  <div class="repairs__body reveal">
+    <p class="eyebrow">Workshop · Restoration</p>
+    <h2 class="section-title section-title--left">Repairs &amp;<br />Restoration</h2>
+    <p class="repairs__lead">Every piece tells a story. Noah restores rings with missing stones, repairs damaged pendants, fixes chains and watches, and recuts gemstones using professional lapidary equipment.</p>
+    <ul class="repairs__list">
+      <li>Stone setting &amp; replacement for rings and pendants with missing or loose gems</li>
+      <li>Chain, clasp, and bail repair — soldered and re-finished by hand</li>
+      <li>Watch repair and movement servicing</li>
+      <li>Gemstone recutting and polishing on professional lapidary equipment</li>
     </ul>
+    <a href="#contact" class="btn btn--solid"><span>Request a Repair</span></a>
   </div>
 </section>
 
@@ -103,33 +111,33 @@
 <div class="rope" role="separator" aria-hidden="true"><i class="rope__gem"></i></div>
 
 <!-- ================= CONTACT ================= -->
-<section class="contact" id="contact">
+<section class="contact" id="contact" data-screen-label="contact">
   <div class="contact__inner">
     <div class="contact__intro reveal">
-      <p class="eyebrow">Quaere · Order</p>
+      <p class="eyebrow">Inquire</p>
       <h2 class="section-title">Commission a piece.</h2>
-      <p class="section-sub">Quaestiones de operibus singularibus accipio. Scribe, et respondebo.</p>
+      <p class="section-sub">Tell Noah what you have in mind — a custom piece or a repair — and he'll get back to you within two days.</p>
       <a class="contact__email" href="mailto:noahsantela@gmail.com">noahsantela@gmail.com</a>
     </div>
 
     <form class="form reveal" id="inquiry" novalidate>
       <div class="field">
         <label for="f-name">Name</label>
-        <input type="text" id="f-name" name="name" autocomplete="name" placeholder="Nomen tuum" />
+        <input type="text" id="f-name" name="name" autocomplete="name" placeholder="Your name" />
         <span class="field__err" data-err></span>
       </div>
       <div class="field">
         <label for="f-email">Email</label>
-        <input type="email" id="f-email" name="email" autocomplete="email" placeholder="epistula@exemplum.com" />
+        <input type="email" id="f-email" name="email" autocomplete="email" placeholder="you@email.com" />
         <span class="field__err" data-err></span>
       </div>
       <div class="field">
         <label for="f-msg">Message</label>
-        <textarea id="f-msg" name="message" rows="4" placeholder="Dic mihi de pieza quam imaginaris…"></textarea>
+        <textarea id="f-msg" name="message" rows="4" placeholder="Tell Noah about the piece you're imagining…"></textarea>
         <span class="field__err" data-err></span>
       </div>
       <button type="submit" class="btn btn--solid"><span>Send Inquiry</span></button>
-      <p class="form__success" data-success hidden>Gratias tibi — epistula missa est. I will respond within two days.</p>
+      <p class="form__success" data-success hidden>Thank you — your message is ready to send. Noah will respond within two days.</p>
     </form>
   </div>
 </section>
@@ -138,13 +146,54 @@
 <footer class="foot">
   <div class="foot__mark">N · S</div>
   <nav class="foot__social" aria-label="Social">
-    <a href="#">Lorem</a>
-    <a href="#">Ipsum</a>
-    <a href="#">Dolor</a>
-    <a href="#">Amet</a>
+    <a href="#">Instagram</a>
+    <a href="#">Facebook</a>
+    <a href="#">Etsy</a>
+    <a href="mailto:noahsantela@gmail.com">Email</a>
   </nav>
-  <p class="foot__copy">© MMXXVI Noah Santela. Omnia opera manu facta.</p>
+  <p class="foot__copy">© 2026 Noah Santela · Every piece made by hand.</p>
+  <p class="foot__maker">Made by <a href="https://websiteupgraderpro.com" target="_blank" rel="noopener">Oryx Technologies</a></p>
 </footer>
+
+<!-- ================= INQUIRY MODAL ================= -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-name" hidden>
+  <div class="modal__scrim" data-close></div>
+  <div class="modal__panel">
+    <button class="modal__close" data-close aria-label="Close">&#10005;</button>
+    <div class="modal__media">
+      <img class="modal__img float-img" id="modal-img" alt="" />
+    </div>
+    <div class="modal__form-wrap">
+      <p class="modal__eyebrow">Inquire · Custom Order</p>
+      <h3 class="modal__name" id="modal-name">Piece</h3>
+      <p class="modal__desc" id="modal-desc">Description</p>
+      <form class="form" id="modal-form" novalidate>
+        <div class="field">
+          <label for="m-name">Name</label>
+          <input type="text" id="m-name" name="name" autocomplete="name" placeholder="Your name" />
+          <span class="field__err" data-err></span>
+        </div>
+        <div class="field">
+          <label for="m-email">Email</label>
+          <input type="email" id="m-email" name="email" autocomplete="email" placeholder="you@email.com" />
+          <span class="field__err" data-err></span>
+        </div>
+        <div class="field">
+          <label for="m-phone">Phone <span style="opacity:.5">(optional)</span></label>
+          <input type="tel" id="m-phone" name="phone" autocomplete="tel" placeholder="+1 …" />
+          <span class="field__err" data-err></span>
+        </div>
+        <div class="field">
+          <label for="m-msg">Message</label>
+          <textarea id="m-msg" name="message" rows="3" placeholder="Tell Noah about the piece you're imagining…"></textarea>
+          <span class="field__err" data-err></span>
+        </div>
+        <button type="submit" class="btn btn--solid"><span>Send Inquiry to Noah</span></button>
+        <p class="form__success" data-success hidden>Thank you — your email is opening now.</p>
+      </form>
+    </div>
+  </div>
+</div>
 
 <template id="__bundler_thumbnail" data-bg-color="#08090b">
   <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
@@ -154,7 +203,7 @@
     <ellipse cx="600" cy="330" rx="64" ry="84" fill="#3a78d8" opacity="0.5"/>
     <rect x="586" y="190" width="28" height="44" rx="6" fill="none" stroke="#c6c7cd" stroke-width="5"/>
     <text x="600" y="660" font-family="Georgia, 'Times New Roman', serif" font-size="92" fill="#e9eaef" text-anchor="middle" letter-spacing="6">Santela</text>
-    <text x="600" y="710" font-family="Georgia, serif" font-size="22" fill="#8a8b93" text-anchor="middle" letter-spacing="14">HANDCRAFTED · MMXXVI</text>
+    <text x="600" y="710" font-family="Georgia, serif" font-size="22" fill="#8a8b93" text-anchor="middle" letter-spacing="14">HANDCRAFTED · 2026</text>
   </svg>
 </template>
 
