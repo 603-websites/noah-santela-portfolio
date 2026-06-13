@@ -7,6 +7,12 @@
   /* ---------- Collection data ---------- */
   var PIECES = [
     {
+      img: "images/float/smoked-whiskey.png",
+      name: "Smoked Whiskey",
+      desc: "A whiskey-warm cabochon cradled in a hand-engraved silver cuff, scrollwork curling down each shoulder like wisps of smoke.",
+      mat: "Sterling · Red Jasper"
+    },
+    {
       img: "images/float/azurite-feathers.png",
       name: "Nightfall",
       desc: "Azurite cabochon framed in twisted silver rope, crowned with twin hand-chased feathers.",
