@@ -246,16 +246,27 @@
 
   /* ---------- mailto helper ---------- */
   function sendMail(subject, v) {
-    var lines = [
-      "Name: " + (v.name || ""),
-      "Email: " + (v.email || ""),
-      v.phone ? "Phone: " + v.phone : null,
-      "",
-      v.message || ""
-    ].filter(function (x) { return x !== null; });
-    var href = "mailto:noahsantella@gmail.com?subject=" + encodeURIComponent(subject) +
-      "&body=" + encodeURIComponent(lines.join("\n"));
-    window.location.href = href;
+    function fallback() {
+      var lines = [
+        "Name: " + (v.name || ""),
+        "Email: " + (v.email || ""),
+        v.phone ? "Phone: " + v.phone : null,
+        "",
+        v.message || ""
+      ].filter(function (x) { return x !== null; });
+      window.location.href = "mailto:noah@santelladesigns.com?subject=" + encodeURIComponent(subject) +
+        "&body=" + encodeURIComponent(lines.join("\n"));
+    }
+    try {
+      fetch("https://n8n-production-512d.up.railway.app/webhook/santella-inquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          subject: subject, name: v.name || "", email: v.email || "",
+          phone: v.phone || "", message: v.message || "", botcheck: v.botcheck || ""
+        })
+      }).then(function (r) { if (!r.ok) fallback(); }).catch(fallback);
+    } catch (e) { fallback(); }
   }
 
   /* ---------- Generic form validation ---------- */
@@ -305,7 +316,8 @@
           name: f.elements["name"] ? f.elements["name"].value.trim() : "",
           email: f.elements["email"] ? f.elements["email"].value.trim() : "",
           phone: f.elements["phone"] ? f.elements["phone"].value.trim() : "",
-          message: f.elements["message"] ? f.elements["message"].value.trim() : ""
+          message: f.elements["message"] ? f.elements["message"].value.trim() : "",
+          botcheck: f.elements["botcheck"] ? f.elements["botcheck"].value : ""
         };
         if (success) success.hidden = false;
         if (typeof onValid === "function") onValid(vals);

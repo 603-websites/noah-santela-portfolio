@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; form-action 'self' mailto:; base-uri 'self'; object-src 'none'; upgrade-insecure-requests" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://n8n-production-512d.up.railway.app; form-action 'self' mailto:; base-uri 'self'; object-src 'none'; upgrade-insecure-requests" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>About  -  Santella Designs</title>
 <meta name="description" content="Meet Noah Santella, the silversmith and goldsmith behind Santella Designs - handcrafting one-of-a-kind jewelry and restoring well-loved pieces by hand." />
@@ -136,6 +136,7 @@
       <a class="contact__email" href="mailto:noah@santelladesigns.com">noah@santelladesigns.com</a>
     </div>
     <form class="form reveal" id="inquiry" novalidate>
+      <input type="text" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0" />
       <div class="field">
         <label for="f-name">Name</label>
         <input type="text" id="f-name" name="name" autocomplete="name" placeholder="Your name" />
