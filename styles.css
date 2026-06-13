@@ -1,10 +1,10 @@
 /* =========================================================
-   Noah Santela — Handcrafted Jewelry
+   Noah Santella  -  Handcrafted Jewelry
    Dark editorial lookbook
    ========================================================= */
 
 :root{
-  /* base — warm-leaning darks */
+  /* base  -  warm-leaning darks */
   --ink-900: #08090b;
   --ink-850: #0c0d10;
   --ink-800: #121317;
@@ -146,7 +146,7 @@ img{ display: block; max-width: 100%; }
       transparent 62%);
   transition: background .25s linear;
 }
-/* iridescent conic sheen — drifts + reacts */
+/* iridescent conic sheen  -  drifts + reacts */
 .hero__iris{
   position: absolute;
   z-index: -2;
@@ -683,7 +683,7 @@ img{ display: block; max-width: 100%; }
 }
 
 /* Frozen/throttled contexts (some sandboxed iframes don't advance
-   transitions/animations) — make state changes instant so nothing
+   transitions/animations)  -  make state changes instant so nothing
    stays stuck at a pre-transition value. Never added in real browsers. */
 .no-anim *, .no-anim *::before, .no-anim *::after{
   transition-duration: 0s !important;
