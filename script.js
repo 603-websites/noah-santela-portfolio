@@ -23,24 +23,6 @@
       name: "Moon's Tear",
       desc: "A teardrop of labradorite that wakes in blue fire, set in an engraved Baroque bezel.",
       mat: "Sterling · Labradorite"
-    },
-    {
-      img: "images/float/azurite-oval.png",
-      name: "Twin Plume",
-      desc: "An azurite oval suspended on a hand-laid rope chain, feathers falling from the stone.",
-      mat: "Sterling · Azurite"
-    },
-    {
-      img: "images/float/labradorite-scroll.png",
-      name: "Deep Shade",
-      desc: "Scrollwork curls around the cabochon like rising smoke  -  a study in light and shadow.",
-      mat: "Sterling · Labradorite"
-    },
-    {
-      img: "images/float/labradorite-rope.png",
-      name: "The Heirloom",
-      desc: "The full pendant on a hand-laid rope chain, finished and polished entirely by hand.",
-      mat: "Sterling · Labradorite"
     }
   ];
 
