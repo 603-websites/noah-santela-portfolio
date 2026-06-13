@@ -4,6 +4,9 @@
 (function () {
   "use strict";
 
+  // Honor the visitor's reduced-motion preference (used to pause auto-animations).
+  var prefersReducedMotion = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+
   /* ---------- Collection data ---------- */
   var PIECES = [
     {
