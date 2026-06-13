@@ -9,7 +9,7 @@
     {
       img: "images/float/smoked-whiskey.png",
       name: "Smoked Whiskey",
-      desc: "A whiskey-warm cabochon cradled in a hand-engraved silver cuff, scrollwork curling down each shoulder like wisps of smoke.",
+      desc: "A whiskey-warm Red Jasper cabochon cradled in a hand-engraved silver cuff, scrollwork curling down each shoulder like wisps of smoke.",
       mat: "Sterling · Red Jasper"
     },
     {
@@ -22,7 +22,7 @@
       img: "images/float/labradorite-baroque.png",
       name: "Moon's Tear",
       desc: "A teardrop of labradorite that wakes in blue fire, set in an engraved Baroque bezel.",
-      mat: "Sterling · Labradorite"
+      mat: "Sterling · 32.5 ct Labradorite"
     }
   ];
 
@@ -193,7 +193,7 @@
 
     // modal form → mailto with piece name in subject
     setupForm(document.getElementById("modal-form"), function (vals) {
-      var subject = "Inquiry: " + (current ? current.name : "Custom piece");
+      var subject = "Inquiry: " + (current ? current.name : "a piece");
       sendMail(subject, vals);
     });
   }
