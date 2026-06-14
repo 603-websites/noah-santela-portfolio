@@ -10,13 +10,6 @@
   /* ---------- Collection data ---------- */
   var PIECES = [
     {
-      img: "images/float/smoked-whiskey-1.png",
-      imgs: ["images/float/smoked-whiskey-1.png", "images/float/smoked-whiskey-2.png", "images/float/smoked-whiskey-3.png"],
-      name: "Smoked Whiskey",
-      desc: "A whiskey-warm Red Jasper cabochon cradled in a hand-engraved silver cuff, scrollwork curling down each shoulder like wisps of smoke.",
-      mat: "Sterling · Red Jasper"
-    },
-    {
       img: "images/float/azurite-feathers.png",
       name: "Nightfall",
       desc: "Azurite cabochon framed in twisted silver rope, crowned with twin hand-chased feathers.",
@@ -27,6 +20,13 @@
       name: "Moon's Tear",
       desc: "A teardrop of labradorite that wakes in blue fire, set in an engraved Baroque bezel.",
       mat: "Sterling · 32.5 ct Labradorite"
+    },
+    {
+      img: "images/float/polychrome-1.jpg",
+      imgs: ["images/float/polychrome-1.jpg", "images/float/polychrome-2.jpg", "images/float/polychrome-3.jpg", "images/float/polychrome-4.jpg", "images/float/polychrome-5.jpg"],
+      name: "Prairie Fire",
+      desc: "Polychrome Jasper sourced direct from a mine in Montana, antiqued with a raw sulphur patina, cradled in sterling silver with hand-chased, rainbow-oxidized feathers.",
+      mat: "Sterling · Polychrome Jasper"
     }
   ];
 
@@ -81,7 +81,7 @@
         '<div class="slide__body">' +
           '<h3 class="slide__name">' + p.name + '</h3>' +
           '<span class="slide__mat">' + p.mat + '</span>' +
-          '<span class="slide__cue">Click to inquire</span>' +
+          '<span class="slide__cue">One of a kind &middot; Inquire</span>' +
         '</div>' +
       '</article>';
     }
