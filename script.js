@@ -241,14 +241,14 @@
     document.addEventListener("keydown", function (e) { if (e.key === "Escape" && m.classList.contains("open")) close(); });
 
     // modal form → mailto with piece name in subject
-    setupForm(document.getElementById("modal-form"), function (vals) {
+    setupForm(document.getElementById("modal-form"), function (vals, onSuccess, onError) {
       var subject = "Inquiry: " + (current ? current.name : "a piece");
-      sendMail(subject, vals);
+      sendMail(subject, vals, onSuccess, onError);
     });
   }
 
   /* ---------- mailto helper ---------- */
-  function sendMail(subject, v) {
+  function sendMail(subject, v, onSuccess, onError) {
     function fallback() {
       var lines = [
         "Name: " + (v.name || ""),
@@ -259,6 +259,7 @@
       ].filter(function (x) { return x !== null; });
       window.location.href = "mailto:noah@santelladesigns.com?subject=" + encodeURIComponent(subject) +
         "&body=" + encodeURIComponent(lines.join("\n"));
+      if (onError) onError();
     }
     try {
       fetch("https://n8n-production-512d.up.railway.app/webhook/santella-inquiry", {
@@ -268,7 +269,10 @@
           subject: subject, name: v.name || "", email: v.email || "",
           phone: v.phone || "", message: v.message || "", botcheck: v.botcheck || ""
         })
-      }).then(function (r) { if (!r.ok) fallback(); }).catch(fallback);
+      }).then(function (r) {
+        if (r.ok) { if (onSuccess) onSuccess(); }
+        else { fallback(); }
+      }).catch(fallback);
     } catch (e) { fallback(); }
   }
 
@@ -322,8 +326,29 @@
           message: f.elements["message"] ? f.elements["message"].value.trim() : "",
           botcheck: f.elements["botcheck"] ? f.elements["botcheck"].value : ""
         };
-        if (success) success.hidden = false;
-        if (typeof onValid === "function") onValid(vals);
+        if (success) success.hidden = true;
+        var btn = f.querySelector('[type="submit"]');
+        var btnInner = btn && btn.querySelector('span');
+        var origText = btnInner ? btnInner.textContent : (btn ? btn.textContent : '');
+        if (btn) btn.disabled = true;
+        if (btnInner) btnInner.textContent = 'Sending…';
+        else if (btn) btn.textContent = 'Sending…';
+        function restoreBtn() {
+          if (btn) btn.disabled = false;
+          if (btnInner) btnInner.textContent = origText;
+          else if (btn) btn.textContent = origText;
+        }
+        if (typeof onValid === "function") {
+          onValid(vals,
+            function () {
+              if (success) success.hidden = false;
+              f.reset();
+              fields.forEach(function (n) { var el = f.elements[n]; if (el) delete el.dataset.touched; });
+              restoreBtn();
+            },
+            function () { restoreBtn(); }
+          );
+        }
       } else if (success) {
         success.hidden = true;
       }
@@ -447,8 +472,8 @@
     atmosphere();
     reveals();
     smoothLinks();
-    setupForm(document.getElementById("inquiry"), function (vals) {
-      sendMail("Commission inquiry  -  Noah Santella", vals);
+    setupForm(document.getElementById("inquiry"), function (vals, onSuccess, onError) {
+      sendMail("Commission inquiry  -  Noah Santella", vals, onSuccess, onError);
     });
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
