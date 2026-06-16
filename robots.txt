@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://santelladesigns.com/sitemap.xml
