@@ -27,6 +27,13 @@
       name: "Prairie Fire",
       desc: "Polychrome Jasper sourced direct from a mine in Montana, antiqued with a raw sulphur patina, cradled in sterling silver with hand-chased, rainbow-oxidized feathers.",
       mat: "Sterling · Polychrome Jasper"
+    },
+    {
+      img: "uploads/20260612_230302.jpg",
+      imgs: ["uploads/20260612_230302.jpg", "uploads/20260612_230554.jpg", "uploads/20260612_230636.jpg"],
+      name: "Smoked Whiskey 2",
+      desc: "A second ember from the same fire — deep Red Jasper set in a hand-engraved sterling cuff, the scrollwork etched by hand and worn like something that has always belonged.",
+      mat: "Sterling · Red Jasper"
     }
   ];
 
