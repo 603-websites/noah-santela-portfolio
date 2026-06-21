@@ -764,3 +764,101 @@ img{ display: block; max-width: 100%; }
   .trust{ gap: 1.6rem; }
   .nav__links .nav__hide-sm{ display:none; }
 }
+
+/* =========================================================
+   MOBILE — improved sizing, spacing and readability
+   ========================================================= */
+@media (max-width: 768px){
+  /* Slider: widen slide so it fills the screen; shorten stage height */
+  .slider{ --slide-w: clamp(240px, 76vw, 340px); }
+  .slide__stage{ height: clamp(260px, 46vw, 360px); }
+  .slide__body{ gap: .5rem; margin-top: .55rem; }
+  .slide__name{ font-size: clamp(1.3rem, 4.5vw, 2rem); }
+  .slide__mat{ font-size: .62rem; letter-spacing: .15em; }
+  .slide__cue{ font-size: .62rem; letter-spacing: .15em; }
+
+  /* Hero */
+  .hero__title{ font-size: clamp(2.8rem, 10vw, 9rem); }
+  .hero__tagline{ font-size: clamp(1rem, 3.2vw, 1.5rem); }
+
+  /* Section type */
+  .section-title{ font-size: clamp(2rem, 7vw, 4.6rem); }
+  .section-sub{ font-size: clamp(1rem, 2.8vw, 1.4rem); }
+  .eyebrow{ letter-spacing: .22em; }
+
+  /* Section head breathing room */
+  .section-head{ gap: .8rem; margin-bottom: clamp(1.8rem, 4vw, 3rem); }
+  .collection{ padding: 1.5rem clamp(1rem, 4vw, 2.2rem) 1rem; }
+
+  /* Nav */
+  .nav__links{ gap: .85rem; }
+
+  /* Contact */
+  .contact{ padding: clamp(2.5rem, 6vw, 5rem) clamp(1rem, 4vw, 2rem); }
+  .contact__inner{ gap: clamp(1.8rem, 4vw, 3.5rem); }
+  .contact__intro{ gap: .9rem; }
+
+  /* Modal */
+  .modal{ padding: .8rem; }
+  .modal__form-wrap{ padding: 1.2rem; gap: 1rem; }
+  .modal__name{ font-size: clamp(1.5rem, 5vw, 2.6rem); }
+  .modal__desc{ font-size: .95rem; }
+  .modal__eyebrow{ letter-spacing: .2em; }
+
+  /* Repairs */
+  .repairs{ padding: 1.5rem clamp(1rem, 4vw, 2rem); }
+
+  /* Buttons */
+  .btn{ font-size: .74rem; letter-spacing: .18em; padding: 1em 1.8em; }
+
+  /* Footer */
+  .foot__social{ gap: 1rem; flex-wrap: wrap; justify-content: center; }
+  .foot__social a{ font-size: .62rem; letter-spacing: .15em; }
+}
+
+@media (max-width: 480px){
+  /* Hero */
+  .hero{ padding: 10vh 5vw 6vh; }
+  .hero__inner{ gap: 1.1rem; }
+  .hero__title{ font-size: clamp(2.5rem, 11vw, 3.8rem); line-height: .9; }
+  .hero__tagline{ font-size: .98rem; letter-spacing: .01em; max-width: 22ch; }
+
+  /* Slider */
+  .slider{ --slide-w: clamp(220px, 84vw, 300px); }
+  .slide__stage{ height: clamp(230px, 58vw, 300px); }
+  .slide__body{ padding: 0 .4rem; gap: .4rem; margin-top: .45rem; }
+  .slide__name{ font-size: clamp(1.15rem, 5vw, 1.5rem); }
+  .slide__mat{ font-size: .56rem; letter-spacing: .12em; }
+  .slide__cue{ font-size: .56rem; letter-spacing: .12em; margin-top: .25rem; }
+  .slider-controls{ gap: .9rem; margin-top: .2rem; }
+  .slider-arrow{ width: 38px; height: 38px; font-size: 1.2rem; }
+  .slider-dots{ gap: .55rem; }
+
+  /* Section type */
+  .section-title{ font-size: clamp(1.8rem, 8.5vw, 3rem); line-height: 1.05; }
+  .section-sub{ font-size: .95rem; }
+  .eyebrow{ font-size: .6rem; letter-spacing: .18em; }
+
+  /* Nav */
+  .nav__brand{ font-size: .82rem; letter-spacing: .12em; }
+
+  /* About */
+  .about__lead{ font-size: 1.05rem; }
+  .about__text{ font-size: .88rem; line-height: 1.75; }
+  .trust{ gap: 1.2rem; }
+
+  /* Repairs */
+  .repairs__lead{ font-size: 1.05rem; }
+  .repairs__list li{ font-size: .88rem; }
+
+  /* Form */
+  .field label{ letter-spacing: .16em; }
+  .field input, .field textarea{ font-size: .92rem; padding: .8em .9em; }
+
+  /* Modal */
+  .modal__close{ top: 10px; right: 10px; width: 32px; height: 32px; font-size: 1rem; }
+
+  /* Footer */
+  .foot__mark{ font-size: 1.3rem; letter-spacing: .2em; }
+  .foot__copy{ font-size: .6rem; letter-spacing: .14em; }
+}
