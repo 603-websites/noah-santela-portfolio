@@ -10,7 +10,8 @@
   /* ---------- Collection data ---------- */
   var PIECES = [
     {
-      img: "images/float/azurite-feathers.png",
+      img: "uploads/IMG_3253.jpeg",
+      imgs: ["uploads/IMG_3253.jpeg", "uploads/IMG_3251.jpeg", "uploads/IMG_3087.jpeg", "uploads/IMG_3250.jpeg", "uploads/IMG_3088.jpeg"],
       name: "Nightfall",
       desc: "Azurite cabochon framed in twisted silver rope, crowned with twin hand-chased feathers.",
       mat: "Sterling · Azurite"
@@ -31,7 +32,7 @@
     {
       img: "uploads/20260612_230302.jpg",
       imgs: ["uploads/20260612_230302.jpg", "uploads/20260612_230554.jpg", "uploads/20260612_230636.jpg"],
-      name: "Smoked Whiskey 2",
+      name: "Smoked Whiskey",
       desc: "A second ember from the same fire — deep Red Jasper set in a hand-engraved sterling cuff, the scrollwork etched by hand and worn like something that has always belonged.",
       mat: "Sterling · Red Jasper"
     }
@@ -135,8 +136,10 @@
     }
 
     function normalize() {
-      if (current === N + 1) { current = 1; position(false); }
-      else if (current === 0) { current = N; position(false); }
+      if (current < 1 || current > N) {
+        current = ((current - 1) % N + N) % N + 1;
+        position(false);
+      }
     }
 
     function go(dir) {
