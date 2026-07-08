@@ -272,6 +272,9 @@ img{ display: block; max-width: 100%; }
   animation: bob 3.4s ease-in-out infinite;
   will-change: transform;
 }
+/* <picture> wrapper is layout-transparent so the inner <img> keeps its
+   original box (flex item / absolutely-positioned carousel frame). */
+.pic{ display: contents; }
 
 /* ---------- multi-photo piece carousel (auto-crossfade) ---------- */
 .carousel{ position: relative; }
@@ -479,6 +482,10 @@ img{ display: block; max-width: 100%; }
 .field.invalid .field__err{ opacity:1; }
 .form__success{
   font-family: var(--serif); font-style:italic; font-size:1.1rem; color: var(--sapphire-glow);
+  padding: .6rem 0;
+}
+.form__error{
+  font-family: var(--serif); font-style:italic; font-size:1rem; color:#c98a8a;
   padding: .6rem 0;
 }
 
@@ -766,7 +773,7 @@ img{ display: block; max-width: 100%; }
 }
 
 /* =========================================================
-   MOBILE — improved sizing, spacing and readability
+   MOBILE - improved sizing, spacing and readability
    ========================================================= */
 @media (max-width: 768px){
   /* Slider: widen slide so it fills the screen; shorten stage height */
