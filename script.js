@@ -33,7 +33,7 @@
       img: "uploads/20260612_230302.jpg",
       imgs: ["uploads/20260612_230302.jpg", "uploads/20260612_230554.jpg", "uploads/20260612_230636.jpg"],
       name: "Smoked Whiskey",
-      desc: "A second ember from the same fire — deep Red Jasper set in a hand-engraved sterling cuff, the scrollwork etched by hand and worn like something that has always belonged.",
+      desc: "A second ember from the same fire, deep Red Jasper set in a hand-engraved sterling cuff, the scrollwork etched by hand and worn like something that has always belonged.",
       mat: "Sterling · Red Jasper"
     }
   ];
@@ -48,15 +48,52 @@
     return path;
   }
 
+  /* ---------- Optimized-image manifest ----------
+     Intrinsic dimensions of the WebP renditions generated for each gallery
+     source. Each source has a `<base>.webp` (long edge <= 1200) and a
+     `<base>-sm.webp` (long edge <= 640) sitting next to the original. The
+     original JPEG/PNG stays referenced as the <img> fallback. */
+  var DIMS = {
+    "uploads/IMG_3253.jpeg": [900, 1200],
+    "uploads/IMG_3251.jpeg": [900, 1200],
+    "uploads/IMG_3087.jpeg": [900, 1200],
+    "uploads/IMG_3250.jpeg": [900, 1200],
+    "uploads/IMG_3088.jpeg": [900, 1200],
+    "uploads/20260612_230302.jpg": [1200, 561],
+    "uploads/20260612_230554.jpg": [1200, 561],
+    "uploads/20260612_230636.jpg": [1200, 561],
+    "images/float/labradorite-baroque.png": [720, 993],
+    "images/float/polychrome-1.jpg": [800, 600],
+    "images/float/polychrome-2.jpg": [800, 600],
+    "images/float/polychrome-3.jpg": [800, 600],
+    "images/float/polychrome-4.jpg": [800, 600],
+    "images/float/polychrome-5.jpg": [800, 600]
+  };
+
+  // Build a lazy-loaded <picture> with a WebP srcset source and the original
+  // as fallback. Falls back to a plain <img> when the source has no WebP
+  // rendition or when running as an inlined standalone bundle.
+  function pictureMarkup(src, imgClass, alt) {
+    var d = DIMS[src];
+    var imgAttrs = 'class="' + imgClass + '" src="' + res(src) + '" alt="' + alt + '"' +
+      (d ? ' width="' + d[0] + '" height="' + d[1] + '"' : '') +
+      ' loading="lazy" decoding="async" draggable="false"';
+    if (window.__resources || !d) return '<img ' + imgAttrs + ' />';
+    var base = src.replace(/\.[^.]+$/, "");
+    var srcset = base + '-sm.webp 640w, ' + base + '.webp 1200w';
+    return '<picture class="pic"><source type="image/webp" srcset="' + srcset +
+      '" sizes="(max-width:600px) 90vw, 430px" /><img ' + imgAttrs + ' /></picture>';
+  }
+
   /* ---------- piece media (single image or multi-photo carousel) ---------- */
   function mediaMarkup(p, cls) {
     if (p.imgs && p.imgs.length > 1) {
       var frames = p.imgs.map(function (src, i) {
-        return '<img class="carousel__frame float-img' + (i === 0 ? ' is-on' : '') + '" src="' + res(src) + '" alt="' + p.name + '" draggable="false" />';
+        return pictureMarkup(src, 'carousel__frame float-img' + (i === 0 ? ' is-on' : ''), p.name);
       }).join('');
       return '<div class="' + cls + ' carousel" data-carousel>' + frames + '</div>';
     }
-    return '<img class="' + cls + ' float-img" src="' + res(p.img) + '" alt="' + p.name + '" draggable="false" />';
+    return pictureMarkup(p.img, cls + ' float-img', p.name);
   }
   function startCarousel(el) {
     var frames = el.querySelectorAll('.carousel__frame');
@@ -214,21 +251,23 @@
       current = p;
       var mediaEl = m.querySelector('.modal__media');
       var prevCar = mediaEl.querySelector('.carousel');
-      if (prevCar) { stopCarousel(prevCar); prevCar.remove(); }
+      if (prevCar) stopCarousel(prevCar);
+      Array.prototype.forEach.call(mediaEl.querySelectorAll('.modal__gen'), function (el) { el.remove(); });
+      imgEl.style.display = 'none';
       if (p.imgs && p.imgs.length > 1) {
-        imgEl.style.display = 'none';
         var car = document.createElement('div');
-        car.className = 'modal__img carousel';
+        car.className = 'modal__img carousel modal__gen';
         car.setAttribute('data-carousel', '');
         car.innerHTML = p.imgs.map(function (src, i) {
-          return '<img class="carousel__frame float-img' + (i === 0 ? ' is-on' : '') + '" src="' + res(src) + '" alt="' + p.name + '">';
+          return pictureMarkup(src, 'carousel__frame float-img' + (i === 0 ? ' is-on' : ''), p.name);
         }).join('');
         mediaEl.appendChild(car);
         startCarousel(car);
       } else {
-        imgEl.style.display = '';
-        imgEl.src = res(p.img);
-        imgEl.alt = p.name;
+        var single = document.createElement('div');
+        single.className = 'modal__gen pic';
+        single.innerHTML = pictureMarkup(p.img, 'modal__img float-img', p.name);
+        mediaEl.appendChild(single);
       }
       nameEl.textContent = p.name;
       descEl.textContent = p.desc;
@@ -239,9 +278,11 @@
       document.body.style.overflow = "hidden";
     };
     function close() {
-      var car = m.querySelector('.modal__media .carousel');
-      if (car) { stopCarousel(car); car.remove(); }
-      if (imgEl) imgEl.style.display = '';
+      var mediaEl = m.querySelector('.modal__media');
+      var car = mediaEl.querySelector('.carousel');
+      if (car) stopCarousel(car);
+      Array.prototype.forEach.call(mediaEl.querySelectorAll('.modal__gen'), function (el) { el.remove(); });
+      if (imgEl) imgEl.style.display = 'none';
       m.classList.remove("open");
       document.body.classList.remove("modal-open");
       document.body.style.overflow = "";
@@ -257,41 +298,95 @@
     });
   }
 
-  /* ---------- mailto helper ---------- */
+  /* ---------- inquiry submission ----------
+     Posts to the inquiry endpoint. Success is shown ONLY on a genuine 2xx
+     response. On any failure (non-2xx, network error, timeout) we surface an
+     honest error asking the visitor to email directly, rather than faking a
+     success or silently hijacking the tab with a mailto: redirect.
+     NOTE: the endpoint below is the legacy unauthenticated n8n webhook. The
+     real fix is an authenticated, server-rate-limited endpoint tracked in
+     SCRUM-270; the client-side hardening here is a best-effort deterrent. */
+  var INQUIRY_ENDPOINT = "https://n8n-production-512d.up.railway.app/webhook/santella-inquiry";
+  var SEND_ERROR_MSG = "We could not send your inquiry just now. Please email noah@santelladesigns.com directly and Noah will follow up.";
+
   function sendMail(subject, v, onSuccess, onError) {
-    function fallback() {
-      var lines = [
-        "Name: " + (v.name || ""),
-        "Email: " + (v.email || ""),
-        v.phone ? "Phone: " + v.phone : null,
-        "",
-        v.message || ""
-      ].filter(function (x) { return x !== null; });
-      window.location.href = "mailto:noah@santelladesigns.com?subject=" + encodeURIComponent(subject) +
-        "&body=" + encodeURIComponent(lines.join("\n"));
-      if (onError) onError();
-    }
+    var ctrl = ("AbortController" in window) ? new AbortController() : null;
+    var timeoutId = ctrl ? setTimeout(function () { ctrl.abort(); }, 12000) : null;
+    function fail() { if (timeoutId) clearTimeout(timeoutId); if (onError) onError(SEND_ERROR_MSG); }
     try {
-      fetch("https://n8n-production-512d.up.railway.app/webhook/santella-inquiry", {
+      fetch(INQUIRY_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           subject: subject, name: v.name || "", email: v.email || "",
           phone: v.phone || "", message: v.message || "", botcheck: v.botcheck || ""
-        })
+        }),
+        signal: ctrl ? ctrl.signal : undefined
       }).then(function (r) {
+        if (timeoutId) clearTimeout(timeoutId);
         if (r.ok) { if (onSuccess) onSuccess(); }
-        else { fallback(); }
-      }).catch(fallback);
-    } catch (e) { fallback(); }
+        else { fail(); }
+      }).catch(fail);
+    } catch (e) { fail(); }
+  }
+
+  /* ---------- Client-side rate limiting ----------
+     Best-effort throttle to blunt casual spam/abuse of the inquiry endpoint.
+     This is NOT a security control (it lives in the client and clears with
+     storage); authoritative rate limiting belongs server-side (SCRUM-270). */
+  var RL_KEY = "santella_inq_rl";
+  var RL_MAX = 3;                 // max sends
+  var RL_WINDOW = 10 * 60 * 1000; // per 10 minutes
+  var RL_MIN_GAP = 4000;          // min ms between sends
+
+  function rlTimes() {
+    try {
+      var s = JSON.parse(window.localStorage.getItem(RL_KEY)) || {};
+      var now = Date.now();
+      return (s.t || []).filter(function (t) { return now - t < RL_WINDOW; });
+    } catch (e) { return null; } // storage unavailable: skip client throttle
+  }
+  function rlCheck() {
+    var times = rlTimes();
+    if (!times) return null;
+    var now = Date.now();
+    if (times.length && now - times[times.length - 1] < RL_MIN_GAP) {
+      return "Please wait a moment before sending again.";
+    }
+    if (times.length >= RL_MAX) {
+      return "You have sent several inquiries recently. Please email noah@santelladesigns.com directly.";
+    }
+    return null;
+  }
+  function rlRecord() {
+    var times = rlTimes();
+    if (!times) return;
+    times.push(Date.now());
+    try { window.localStorage.setItem(RL_KEY, JSON.stringify({ t: times })); } catch (e) {}
   }
 
   /* ---------- Generic form validation ---------- */
+  var MAX_LEN = { name: 100, email: 150, message: 2000 };
+
   function setupForm(f, onValid) {
     if (!f) return;
     var success = f.querySelector("[data-success]");
     var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     var fields = ["name", "email", "message"]; // phone optional, not validated
+
+    // Honest, non-field error surface (network/rate-limit failures).
+    var formErr = f.querySelector("[data-formerr]");
+    if (!formErr) {
+      formErr = document.createElement("p");
+      formErr.className = "form__error";
+      formErr.setAttribute("data-formerr", "");
+      formErr.setAttribute("role", "alert");
+      formErr.hidden = true;
+      if (success && success.parentNode === f) f.insertBefore(formErr, success);
+      else f.appendChild(formErr);
+    }
+    function showErr(msg) { formErr.textContent = msg || SEND_ERROR_MSG; formErr.hidden = false; }
+    function hideErr() { formErr.hidden = true; }
 
     function setErr(field, msg) {
       field.classList.toggle("invalid", !!msg);
@@ -305,15 +400,18 @@
       var name = f.elements["name"], email = f.elements["email"], msg = f.elements["message"];
       if (showAll || name.dataset.touched) {
         if (!name.value.trim()) { setErr(fieldOf(name), "Name required."); ok = false; }
+        else if (name.value.trim().length > MAX_LEN.name) { setErr(fieldOf(name), "Name is too long."); ok = false; }
         else setErr(fieldOf(name), "");
       }
       if (showAll || email.dataset.touched) {
         if (!email.value.trim()) { setErr(fieldOf(email), "Email required."); ok = false; }
+        else if (email.value.trim().length > MAX_LEN.email) { setErr(fieldOf(email), "Email is too long."); ok = false; }
         else if (!emailRe.test(email.value.trim())) { setErr(fieldOf(email), "Invalid email format."); ok = false; }
         else setErr(fieldOf(email), "");
       }
       if (showAll || msg.dataset.touched) {
         if (msg.value.trim().length < 8) { setErr(fieldOf(msg), "Add a little more (8+ characters)."); ok = false; }
+        else if (msg.value.trim().length > MAX_LEN.message) { setErr(fieldOf(msg), "Message is too long (2000 characters max)."); ok = false; }
         else setErr(fieldOf(msg), "");
       }
       return ok;
@@ -322,45 +420,69 @@
     fields.forEach(function (n) {
       var el = f.elements[n]; if (!el) return;
       el.addEventListener("blur", function () { el.dataset.touched = "1"; validate(false); });
-      el.addEventListener("input", function () { if (el.dataset.touched) validate(false); if (success) success.hidden = true; });
+      el.addEventListener("input", function () { if (el.dataset.touched) validate(false); if (success) success.hidden = true; hideErr(); });
     });
+
+    function clearTouched() {
+      fields.forEach(function (n) { var el = f.elements[n]; if (el) delete el.dataset.touched; });
+    }
 
     f.addEventListener("submit", function (e) {
       e.preventDefault();
       fields.forEach(function (n) { if (f.elements[n]) f.elements[n].dataset.touched = "1"; });
-      if (validate(true)) {
-        var vals = {
-          name: f.elements["name"] ? f.elements["name"].value.trim() : "",
-          email: f.elements["email"] ? f.elements["email"].value.trim() : "",
-          phone: f.elements["phone"] ? f.elements["phone"].value.trim() : "",
-          message: f.elements["message"] ? f.elements["message"].value.trim() : "",
-          botcheck: f.elements["botcheck"] ? f.elements["botcheck"].value : ""
-        };
-        if (success) success.hidden = true;
-        var btn = f.querySelector('[type="submit"]');
-        var btnInner = btn && btn.querySelector('span');
-        var origText = btnInner ? btnInner.textContent : (btn ? btn.textContent : '');
-        if (btn) btn.disabled = true;
-        if (btnInner) btnInner.textContent = 'Sending…';
-        else if (btn) btn.textContent = 'Sending…';
-        function restoreBtn() {
-          if (btn) btn.disabled = false;
-          if (btnInner) btnInner.textContent = origText;
-          else if (btn) btn.textContent = origText;
-        }
-        if (typeof onValid === "function") {
-          onValid(vals,
-            function () {
-              if (success) success.hidden = false;
-              f.reset();
-              fields.forEach(function (n) { var el = f.elements[n]; if (el) delete el.dataset.touched; });
-              restoreBtn();
-            },
-            function () { restoreBtn(); }
-          );
-        }
-      } else if (success) {
-        success.hidden = true;
+      if (!validate(true)) { if (success) success.hidden = true; return; }
+
+      // Honeypot: a filled hidden field means a bot. Show the normal success
+      // state so the bot gets no signal, but never send or count it.
+      var honeypot = f.elements["botcheck"] ? f.elements["botcheck"].value : "";
+      if (honeypot) {
+        hideErr();
+        if (success) success.hidden = false;
+        f.reset();
+        clearTouched();
+        return;
+      }
+
+      // Client-side throttle (best-effort; server-side is the real control).
+      var rlMsg = rlCheck();
+      if (rlMsg) { if (success) success.hidden = true; showErr(rlMsg); return; }
+
+      var vals = {
+        name: f.elements["name"] ? f.elements["name"].value.trim() : "",
+        email: f.elements["email"] ? f.elements["email"].value.trim() : "",
+        phone: f.elements["phone"] ? f.elements["phone"].value.trim() : "",
+        message: f.elements["message"] ? f.elements["message"].value.trim() : "",
+        botcheck: honeypot
+      };
+      if (success) success.hidden = true;
+      hideErr();
+      var btn = f.querySelector('[type="submit"]');
+      var btnInner = btn && btn.querySelector('span');
+      var origText = btnInner ? btnInner.textContent : (btn ? btn.textContent : '');
+      if (btn) btn.disabled = true;
+      if (btnInner) btnInner.textContent = 'Sending…';
+      else if (btn) btn.textContent = 'Sending…';
+      function restoreBtn() {
+        if (btn) btn.disabled = false;
+        if (btnInner) btnInner.textContent = origText;
+        else if (btn) btn.textContent = origText;
+      }
+      if (typeof onValid === "function") {
+        onValid(vals,
+          function () {
+            rlRecord();
+            hideErr();
+            if (success) success.hidden = false;
+            f.reset();
+            clearTouched();
+            restoreBtn();
+          },
+          function (msg) {
+            if (success) success.hidden = true;
+            showErr(msg);
+            restoreBtn();
+          }
+        );
       }
     });
   }
