@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://www.websiteupgraderpro.com; form-action 'self' mailto:; base-uri 'self'; object-src 'none'; upgrade-insecure-requests" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://www.websiteupgraderpro.com; form-action 'self' mailto:; base-uri 'self'; object-src 'none'; upgrade-insecure-requests" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>About  -  Santella Designs</title>
 <meta name="description" content="Meet Noah Santella, the silversmith and goldsmith behind Santella Designs - handcrafting one-of-a-kind jewelry and restoring well-loved pieces by hand." />
@@ -181,15 +181,11 @@
 </template>
 
 <!-- Website Upgrader Pro SaaS integration. Publishable tenant API key, guarded
-     server-side by a per-tenant CORS allowlist + rate limit + honeypot. Replace
-     the placeholder below with Santella's real key after Louis provisions the
-     tenant (see SANTELLA_SETUP.md). Must load before script.js. -->
-<script>
-  window.SANTELLA_SAAS = {
-    base: 'https://www.websiteupgraderpro.com',
-    apiKey: 'REPLACE_WITH_SANTELLA_TENANT_KEY'
-  };
-</script>
+     server-side by a per-tenant CORS allowlist + rate limit + honeypot. Set the
+     real key in saas-config.js after Louis provisions the tenant (see
+     SANTELLA_SETUP.md). Loaded as an external file so the page keeps a strict
+     script-src 'self' CSP (no 'unsafe-inline'). Must load before script.js. -->
+<script src="saas-config.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
