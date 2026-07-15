@@ -39,7 +39,12 @@
 <!-- ================= NAV ================= -->
 <nav class="nav" id="nav">
   <a href="index.html#top" class="nav__brand"><b>Santella</b> Designs</a>
-  <div class="nav__links">
+  <button class="nav__toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav-links">
+    <span class="nav__toggle-bar"></span>
+    <span class="nav__toggle-bar"></span>
+    <span class="nav__toggle-bar"></span>
+  </button>
+  <div class="nav__links" id="nav-links">
     <a href="index.html#collection">Collection</a>
     <a href="index.html#repairs">Repairs</a>
     <a href="about.html" class="active">About</a>
@@ -75,7 +80,7 @@
          at the bench (roughly 800-1200px, shot on a dark backdrop so the fade
          treatment blends). Placeholder below reuses a collection photo. -->
     <figure class="about-media piece-halo">
-      <img class="piece-image float-img" src="images/float/azurite-feathers.png" alt="Silver pendant with an azurite stone and chased feather details, made in Noah Santella's studio" width="760" height="900" loading="lazy" decoding="async" />
+      <img class="piece-image piece-image--soft float-img" src="images/float/azurite-feathers.png" alt="Silver pendant with an azurite stone and chased feather details, made in Noah Santella's studio" width="760" height="900" loading="lazy" decoding="async" />
     </figure>
   </div>
   <div class="bio__text reveal">

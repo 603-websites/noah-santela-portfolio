@@ -293,6 +293,13 @@ img{ display: block; max-width: 100%; }
   -webkit-mask-size: 100% 100%;
           mask-size: 100% 100%;
 }
+/* Softer variant for transparent floats whose subject fills the frame
+   (repairs pendant, About figure): the standard mask amputates the bail,
+   tip, and edge detail, so here only the outermost sliver dissolves. */
+.piece-image--soft{
+  -webkit-mask-image: radial-gradient(ellipse 72% 72% at 50% 50%, #000 62%, transparent 100%);
+          mask-image: radial-gradient(ellipse 72% 72% at 50% 50%, #000 62%, transparent 100%);
+}
 .piece-halo{ position: relative; }
 .piece-halo::before{
   content:""; position:absolute; left:50%; top:50%; translate:-50% -48%;
@@ -568,7 +575,48 @@ img{ display: block; max-width: 100%; }
 .nav__links a:hover{ color: var(--silver-hi); }
 .nav__links a:hover::after, .nav__links a.active::after{ right:0; }
 .nav__links a.active{ color: var(--silver-hi); }
-.nav__toggle{ display:none; }
+
+/* hamburger toggle: hidden on desktop, shown <=768px */
+.nav__toggle{
+  display:none;
+  flex-direction:column; justify-content:center; align-items:stretch; gap:7px;
+  width:44px; height:44px; padding:10px 9px;
+  background:transparent; border:0; cursor:pointer;
+}
+.nav__toggle-bar{
+  display:block; height:1px; width:100%;
+  background: var(--silver-hi);
+  transition: transform .35s var(--ease), opacity .25s var(--ease);
+}
+.nav.menu-open .nav__toggle-bar:nth-child(1){ transform: translateY(8px) rotate(45deg); }
+.nav.menu-open .nav__toggle-bar:nth-child(2){ opacity:0; }
+.nav.menu-open .nav__toggle-bar:nth-child(3){ transform: translateY(-8px) rotate(-45deg); }
+
+@media (max-width: 768px){
+  .nav__toggle{ display:flex; }
+  .nav__links{
+    position:absolute; top:100%; left:0; right:0;
+    flex-direction:column; align-items:center; gap:0;
+    background: rgba(8,9,11,.96);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    border-bottom:1px solid rgba(255,255,255,.07);
+    padding:.5rem 0 1rem;
+    opacity:0; transform: translateY(-8px);
+    visibility:hidden; pointer-events:none;
+    transition: opacity .35s var(--ease), transform .35s var(--ease), visibility 0s linear .35s;
+  }
+  .nav.menu-open .nav__links{
+    opacity:1; transform:none;
+    visibility:visible; pointer-events:auto;
+    transition: opacity .35s var(--ease), transform .35s var(--ease);
+  }
+  .nav__links a{
+    width:100%; text-align:center;
+    padding:.95em 2em;
+    font-size:.78rem; letter-spacing:.3em;
+  }
+  .nav__links a::after{ display:none; }
+}
 
 /* keep anchored sections clear of the fixed nav */
 #collection, #repairs, #contact, #about, #craft, #clientele{ scroll-margin-top: 84px; }
@@ -793,13 +841,10 @@ img{ display: block; max-width: 100%; }
   .modal__img{ max-height: 36vh; }
 }
 @media (max-width: 640px){
-  .nav__brand{ font-size:.85rem; letter-spacing:.16em; }
-  .nav__links{ gap: 1rem; }
-  .nav__links a{ font-size:.6rem; letter-spacing:.16em; }
+  .nav__brand{ font-size:.9rem; letter-spacing:.16em; }
 }
 @media (max-width: 560px){
   .trust{ gap: 1.6rem; }
-  .nav__links .nav__hide-sm{ display:none; }
 }
 
 /* =========================================================
@@ -826,9 +871,6 @@ img{ display: block; max-width: 100%; }
   /* Section head breathing room */
   .section-head{ gap: .8rem; margin-bottom: clamp(1.8rem, 4vw, 3rem); }
   .collection{ padding: 1.5rem clamp(1rem, 4vw, 2.2rem) 1rem; }
-
-  /* Nav */
-  .nav__links{ gap: .85rem; }
 
   /* Contact */
   .contact{ padding: clamp(2.5rem, 6vw, 5rem) clamp(1rem, 4vw, 2rem); }
@@ -875,9 +917,6 @@ img{ display: block; max-width: 100%; }
   .section-title{ font-size: clamp(1.8rem, 8.5vw, 3rem); line-height: 1.05; }
   .section-sub{ font-size: .95rem; }
   .eyebrow{ font-size: .6rem; letter-spacing: .18em; }
-
-  /* Nav */
-  .nav__brand{ font-size: .82rem; letter-spacing: .12em; }
 
   /* About */
   .about__lead{ font-size: 1.05rem; }
