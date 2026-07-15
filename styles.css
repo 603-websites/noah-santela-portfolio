@@ -276,14 +276,43 @@ img{ display: block; max-width: 100%; }
    original box (flex item / absolutely-positioned carousel frame). */
 .pic{ display: contents; }
 
+/* ---------- unified piece treatment ----------
+   Every product/hero photo dissolves into the page's near-black:
+   .piece-image feathers the image edges with a radial mask (no hard
+   rectangle), .piece-halo pools a faint light behind the piece so it
+   reads as lit from within the dark. Both are sized in percentages so
+   they hold at any breakpoint and any pixel density. */
+.piece-image{
+  /* closest-side keeps the ellipse hugging the image box at every aspect
+     ratio, so all four edges dissolve (farthest-corner leaves the side
+     midpoints nearly solid and the photo still reads as a rectangle). */
+  -webkit-mask-image: radial-gradient(ellipse closest-side at 50% 50%, #000 50%, rgba(0,0,0,.38) 74%, transparent 92%);
+          mask-image: radial-gradient(ellipse closest-side at 50% 50%, #000 50%, rgba(0,0,0,.38) 74%, transparent 92%);
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+          mask-size: 100% 100%;
+}
+.piece-halo{ position: relative; }
+.piece-halo::before{
+  content:""; position:absolute; left:50%; top:50%; translate:-50% -48%;
+  width:96%; height:92%; z-index:0;
+  background: radial-gradient(50% 46% at 50% 46%,
+    rgba(58,120,216,.16), rgba(26,58,107,.07) 48%, transparent 72%);
+  pointer-events:none;
+}
+
 /* ---------- multi-photo piece carousel (auto-crossfade) ---------- */
 .carousel{ position: relative; }
 .slide__img.carousel{ width: 84%; height: 92%; }
 .modal__img.carousel{ width: 90%; height: 60vh; }
+/* Frames hug their rendered image box (centered, shrink-to-fit) instead of
+   stretching to the stage, so the .piece-image edge fade always lines up
+   with the photo's real edges at every aspect ratio. */
 .carousel__frame{
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
-  object-fit: contain;
+  position: absolute; left: 50%; top: 50%; translate: -50% -50%;
+  width: auto; height: auto;
+  max-width: 100%; max-height: 100%;
   opacity: 0; transition: opacity .9s ease;
 }
 .carousel__frame.is-on{ opacity: 1; }
@@ -323,14 +352,9 @@ img{ display: block; max-width: 100%; }
   transform: scale(.82);
 }
 .slide.is-active .slide__stage{ transform: scale(1); }
-/* velvet spotlight pooled under the active piece */
-.slide__stage::before{
-  content:""; position:absolute; left:50%; top:50%; translate:-50% -46%;
-  width: 92%; height: 88%;
-  background: radial-gradient(50% 46% at 50% 44%, rgba(58,120,216,.16), transparent 70%);
-  opacity: 0; transition: opacity .5s var(--ease); pointer-events:none;
-}
-.slide.is-active .slide__stage::before{ opacity: 1; }
+/* shared halo: faint on resting slides, full on the active piece */
+.slide__stage.piece-halo::before{ opacity: .35; transition: opacity .5s var(--ease); }
+.slide.is-active .slide__stage.piece-halo::before{ opacity: 1; }
 .slide__stage::after{
   content:""; position:absolute; left:50%; bottom:7%; translate:-50% 0;
   width: 56%; height: 30px; border-radius:50%;
@@ -347,8 +371,16 @@ img{ display: block; max-width: 100%; }
   transform: translateX(-150%);
   mix-blend-mode: screen; pointer-events:none; opacity:0;
 }
-.slide.is-active .slide__shimmer{ opacity:1; animation: gemSweep 6s ease-in-out infinite; }
-@keyframes gemSweep{ 0%{ transform: translateX(-150%);} 18%{ transform: translateX(150%);} 100%{ transform: translateX(150%);} }
+/* opacity lives in the keyframes so the band is invisible while parked
+   outside its own stage (otherwise it bleeds over neighbouring slides) */
+.slide.is-active .slide__shimmer{ animation: gemSweep 6s ease-in-out infinite; }
+@keyframes gemSweep{
+  0%{ transform: translateX(-150%); opacity:0; }
+  5%{ opacity:1; }
+  13%{ opacity:1; }
+  18%{ transform: translateX(150%); opacity:0; }
+  100%{ transform: translateX(150%); opacity:0; }
+}
 
 .slide__body{ text-align:center; display:flex; flex-direction:column; gap:.4rem; margin-top:.4rem; padding:0 1rem; }
 .slide__name{ font-family: var(--serif); font-size: clamp(1.5rem,2.4vw,2rem); font-weight:500; line-height:1.05; color: var(--silver-hi); }
@@ -553,12 +585,6 @@ img{ display: block; max-width: 100%; }
   position:relative; height: clamp(360px, 50vh, 520px);
   display:flex; align-items:center; justify-content:center;
 }
-.repairs__media::before{
-  content:""; position:absolute; left:50%; top:48%; translate:-50% -50%;
-  width:80%; height:78%;
-  background: radial-gradient(50% 48% at 50% 46%, rgba(58,120,216,.16), transparent 72%);
-  pointer-events:none;
-}
 .repairs__media::after{
   content:""; position:absolute; left:50%; bottom:10%; translate:-50% 0;
   width:50%; height:30px; border-radius:50%;
@@ -608,7 +634,7 @@ img{ display: block; max-width: 100%; }
 .modal__media{
   position:relative; display:flex; align-items:center; justify-content:center;
   padding: 1.5rem; min-height: 280px;
-  background: radial-gradient(60% 56% at 50% 46%, #16171d, #0a0b0e 76%);
+  background: var(--ink-900);
   border-right:1px solid rgba(255,255,255,.05);
 }
 .modal__media::after{
@@ -651,6 +677,10 @@ img{ display: block; max-width: 100%; }
   font-family: var(--serif); font-size: 3.6em; line-height:.8; float:left;
   padding: .05em .12em 0 0; color: var(--silver-hi); font-weight:500;
 }
+
+/* About-page maker/workshop image: same dissolve treatment as the pieces */
+.about-media{ margin: 1.8rem 0 0; display:flex; justify-content:center; }
+.about-media img{ max-width: min(320px, 100%); height:auto; }
 
 .craft__grid{ display:grid; grid-template-columns: repeat(2, 1fr); gap: clamp(1rem,3vw,2rem) clamp(2rem,5vw,4rem); margin-top:1.5rem; }
 .craft__item{
