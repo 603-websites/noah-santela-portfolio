@@ -80,7 +80,10 @@
          at the bench (roughly 800-1200px, shot on a dark backdrop so the fade
          treatment blends). Placeholder below reuses a collection photo. -->
     <figure class="about-media piece-halo">
-      <img class="piece-image piece-image--soft float-img" src="images/float/azurite-feathers.png" alt="Silver pendant with an azurite stone and chased feather details, made in Noah Santella's studio" width="760" height="900" loading="lazy" decoding="async" />
+      <picture class="pic">
+        <source type="image/webp" srcset="images/float/azurite-feathers-sm.webp 640w, images/float/azurite-feathers.webp 760w" sizes="(max-width:880px) 86vw, 320px" />
+        <img class="piece-image piece-image--soft float-img" src="images/float/azurite-feathers.png" alt="Silver pendant with an azurite stone and chased feather details, made in Noah Santella's studio" width="760" height="900" loading="lazy" decoding="async" />
+      </picture>
     </figure>
   </div>
   <div class="bio__text reveal">
@@ -182,9 +185,12 @@
 <footer class="foot">
   <div class="foot__mark">N · S</div>
   <nav class="foot__social" aria-label="Social">
+    <!-- TODO(SCRUM-300): restore these once Noah provides real profile URLs;
+         dead href="#" placeholders hurt UX and SEO.
     <a href="#">Instagram</a>
     <a href="#">Facebook</a>
     <a href="#">Etsy</a>
+    -->
     <a href="mailto:noah@santelladesigns.com">Email</a>
   </nav>
   <p class="foot__copy">© 2026 Santella Designs · Made at the bench in New Hampshire.</p>
