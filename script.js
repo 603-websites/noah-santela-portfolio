@@ -10,30 +10,35 @@
   /* ---------- Collection data ---------- */
   var PIECES = [
     {
-      img: "uploads/IMG_3253.jpeg",
-      imgs: ["uploads/IMG_3253.jpeg", "uploads/IMG_3251.jpeg", "uploads/IMG_3087.jpeg", "uploads/IMG_3250.jpeg", "uploads/IMG_3088.jpeg"],
+      img: "uploads/IMG_3088.jpeg",
+      imgs: ["uploads/IMG_3088.jpeg", "uploads/IMG_3087.jpeg"],
       name: "Nightfall",
       desc: "Azurite cabochon framed in twisted silver rope, crowned with twin hand-chased feathers.",
+      alt: "Nightfall pendant: a deep blue azurite cabochon in a twisted sterling rope bezel, crowned with two chased silver feathers, on a rope chain",
       mat: "Sterling · Azurite"
     },
     {
       img: "images/float/labradorite-baroque.png",
+      imgs: ["images/float/labradorite-baroque.png", "uploads/IMG_3253.jpeg", "uploads/IMG_3251.jpeg", "uploads/IMG_3250.jpeg"],
       name: "Moon's Tear",
       desc: "A teardrop of labradorite that wakes in blue fire, set in an engraved Baroque bezel.",
+      alt: "Moon's Tear pendant: a teardrop labradorite flashing blue, set in an engraved sterling bezel with Baroque scrollwork",
       mat: "Sterling · 32.5 ct Labradorite"
     },
     {
       img: "images/float/polychrome-1.jpg",
       imgs: ["images/float/polychrome-1.jpg", "images/float/polychrome-2.jpg", "images/float/polychrome-3.jpg", "images/float/polychrome-4.jpg", "images/float/polychrome-5.jpg"],
       name: "Prairie Fire",
-      desc: "Polychrome Jasper sourced direct from a mine in Montana, antiqued with a raw sulphur patina, cradled in sterling silver with hand-chased, rainbow-oxidized feathers.",
+      desc: "Polychrome Jasper sourced direct from a mine in Montana, antiqued with a raw sulphur patina, cradled in sterling with chased feathers oxidized to a rainbow finish.",
+      alt: "Prairie Fire pendant: a round Montana polychrome jasper with amber and cream banding, flanked by two oxidized silver feathers on a sterling rope chain",
       mat: "Sterling · Polychrome Jasper"
     },
     {
       img: "uploads/20260612_230302.jpg",
       imgs: ["uploads/20260612_230302.jpg", "uploads/20260612_230554.jpg", "uploads/20260612_230636.jpg"],
       name: "Smoked Whiskey",
-      desc: "A second ember from the same fire, deep Red Jasper set in a hand-engraved sterling cuff, the scrollwork etched by hand and worn like something that has always belonged.",
+      desc: "A second ember from the same fire, deep Red Jasper set in an engraved sterling cuff, its scrollwork cut freehand and worn like something that has always belonged.",
+      alt: "Smoked Whiskey cuff: a deep red jasper stone set in a wide sterling silver cuff engraved with freehand scrollwork",
       mat: "Sterling · Red Jasper"
     }
   ];
@@ -59,15 +64,15 @@
     "uploads/IMG_3087.jpeg": [900, 1200],
     "uploads/IMG_3250.jpeg": [900, 1200],
     "uploads/IMG_3088.jpeg": [900, 1200],
-    "uploads/20260612_230302.jpg": [1200, 561],
-    "uploads/20260612_230554.jpg": [1200, 561],
-    "uploads/20260612_230636.jpg": [1200, 561],
+    "uploads/20260612_230302.jpg": [1200, 560],
+    "uploads/20260612_230554.jpg": [1200, 560],
+    "uploads/20260612_230636.jpg": [1200, 560],
     "images/float/labradorite-baroque.png": [720, 993],
-    "images/float/polychrome-1.jpg": [800, 600],
-    "images/float/polychrome-2.jpg": [800, 600],
-    "images/float/polychrome-3.jpg": [800, 600],
-    "images/float/polychrome-4.jpg": [800, 600],
-    "images/float/polychrome-5.jpg": [800, 600]
+    "images/float/polychrome-1.jpg": [600, 800],
+    "images/float/polychrome-2.jpg": [600, 800],
+    "images/float/polychrome-3.jpg": [600, 800],
+    "images/float/polychrome-4.jpg": [600, 800],
+    "images/float/polychrome-5.jpg": [600, 800]
   };
 
   // Build a lazy-loaded <picture> with a WebP srcset source and the original
@@ -75,7 +80,7 @@
   // rendition or when running as an inlined standalone bundle.
   function pictureMarkup(src, imgClass, alt) {
     var d = DIMS[src];
-    var imgAttrs = 'class="' + imgClass + '" src="' + res(src) + '" alt="' + alt + '"' +
+    var imgAttrs = 'class="' + imgClass + ' piece-image" src="' + res(src) + '" alt="' + alt + '"' +
       (d ? ' width="' + d[0] + '" height="' + d[1] + '"' : '') +
       ' loading="lazy" decoding="async" draggable="false"';
     if (window.__resources || !d) return '<img ' + imgAttrs + ' />';
@@ -86,14 +91,18 @@
   }
 
   /* ---------- piece media (single image or multi-photo carousel) ---------- */
+  function pieceAlt(p, i) {
+    var base = p.alt || p.name;
+    return i > 0 ? base + " (alternate view)" : base;
+  }
   function mediaMarkup(p, cls) {
     if (p.imgs && p.imgs.length > 1) {
       var frames = p.imgs.map(function (src, i) {
-        return pictureMarkup(src, 'carousel__frame float-img' + (i === 0 ? ' is-on' : ''), p.name);
+        return pictureMarkup(src, 'carousel__frame float-img' + (i === 0 ? ' is-on' : ''), pieceAlt(p, i));
       }).join('');
       return '<div class="' + cls + ' carousel" data-carousel>' + frames + '</div>';
     }
-    return pictureMarkup(p.img, cls + ' float-img', p.name);
+    return pictureMarkup(p.img, cls + ' float-img', pieceAlt(p, 0));
   }
   function startCarousel(el) {
     var frames = el.querySelectorAll('.carousel__frame');
@@ -106,6 +115,15 @@
     }, 2600);
   }
   function stopCarousel(el) { if (el && el.__carInt) { clearInterval(el.__carInt); el.__carInt = null; } }
+  // Lazy images injected into the (initially display:none) modal never get
+  // picked up by the browser's lazy loader once it opens, because the
+  // shrink-to-fit frames have no box until the image loads. Flip them to
+  // eager at open time; the visitor has explicitly asked to see the piece.
+  function forceEagerLoad(root) {
+    Array.prototype.forEach.call(root.querySelectorAll('img[loading="lazy"]'), function (img) {
+      img.loading = 'eager';
+    });
+  }
   function initCarouselsIn(root) {
     Array.prototype.forEach.call(root.querySelectorAll('[data-carousel]'), startCarousel);
   }
@@ -119,7 +137,7 @@
 
     function slideHTML(p, i, clone) {
       return '<article class="slide" data-piece="' + i + '"' + (clone ? ' data-clone="1" aria-hidden="true"' : ' data-screen-label="piece-' + (i + 1) + '"') + '>' +
-        '<div class="slide__stage">' +
+        '<div class="slide__stage piece-halo">' +
           mediaMarkup(p, 'slide__img') +
           '<span class="slide__shimmer"></span>' +
         '</div>' +
@@ -137,6 +155,21 @@
     html += slideHTML(PIECES[0], 0, true);
     track.innerHTML = html;
     initCarouselsIn(track);
+
+    // The shrink-to-fit slide images have no box until they load, so the
+    // browser's native lazy loader never picks them up. Load the whole track
+    // as soon as the slider approaches the viewport instead.
+    if ("IntersectionObserver" in window) {
+      var trackIO = new IntersectionObserver(function (entries) {
+        if (entries.some(function (e) { return e.isIntersecting; })) {
+          forceEagerLoad(track);
+          trackIO.disconnect();
+        }
+      }, { rootMargin: "600px" });
+      trackIO.observe(slider);
+    } else {
+      forceEagerLoad(track);
+    }
 
     var slides = Array.prototype.slice.call(track.children);
     var dotsWrap = slider.querySelector(".slider-dots");
@@ -259,15 +292,17 @@
         car.className = 'modal__img carousel modal__gen';
         car.setAttribute('data-carousel', '');
         car.innerHTML = p.imgs.map(function (src, i) {
-          return pictureMarkup(src, 'carousel__frame float-img' + (i === 0 ? ' is-on' : ''), p.name);
+          return pictureMarkup(src, 'carousel__frame float-img' + (i === 0 ? ' is-on' : ''), pieceAlt(p, i));
         }).join('');
         mediaEl.appendChild(car);
+        forceEagerLoad(mediaEl);
         startCarousel(car);
       } else {
         var single = document.createElement('div');
         single.className = 'modal__gen pic';
-        single.innerHTML = pictureMarkup(p.img, 'modal__img float-img', p.name);
+        single.innerHTML = pictureMarkup(p.img, 'modal__img float-img', pieceAlt(p, 0));
         mediaEl.appendChild(single);
+        forceEagerLoad(mediaEl);
       }
       nameEl.textContent = p.name;
       descEl.textContent = p.desc;
@@ -605,7 +640,7 @@
     reveals();
     smoothLinks();
     setupForm(document.getElementById("inquiry"), function (vals, onSuccess, onError) {
-      sendMail("Commission inquiry  -  Noah Santella", vals, onSuccess, onError);
+      sendMail("Commission inquiry for Noah Santella", vals, onSuccess, onError);
     });
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
