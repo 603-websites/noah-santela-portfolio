@@ -45,7 +45,12 @@
 <!-- ================= NAV ================= -->
 <nav class="nav" id="nav">
   <a href="#top" class="nav__brand"><b>Santella</b> Designs</a>
-  <div class="nav__links">
+  <button class="nav__toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav-links">
+    <span class="nav__toggle-bar"></span>
+    <span class="nav__toggle-bar"></span>
+    <span class="nav__toggle-bar"></span>
+  </button>
+  <div class="nav__links" id="nav-links">
     <a href="#collection">Collection</a>
     <a href="#repairs">Repairs</a>
     <a href="about.html">About</a>
@@ -111,7 +116,7 @@
   <div class="repairs__media piece-halo reveal">
     <picture class="pic">
       <source type="image/webp" srcset="images/float/labradorite-scroll-sm.webp 640w, images/float/labradorite-scroll.webp 1200w" sizes="(max-width:600px) 82vw, 430px" />
-      <img class="repairs__img float-img piece-image" src="images/float/labradorite-scroll.png" alt="Restored pendant with a labradorite teardrop in a scrolled sterling silver setting" width="720" height="1062" loading="lazy" decoding="async" />
+      <img class="repairs__img float-img piece-image piece-image--soft" src="images/float/labradorite-scroll.png" alt="Restored pendant with a labradorite teardrop in a scrolled sterling silver setting" width="720" height="1062" loading="lazy" decoding="async" />
     </picture>
   </div>
   <div class="repairs__body reveal">

@@ -158,18 +158,31 @@
 
     // The shrink-to-fit slide images have no box until they load, so the
     // browser's native lazy loader never picks them up. Load the whole track
-    // as soon as the slider approaches the viewport instead.
+    // once the slider approaches the viewport. IO is the primary trigger,
+    // with a scroll check and a timeout as fail-opens (IO callbacks don't
+    // fire in some throttled/sandboxed contexts  -  same reason reveals()
+    // probes before trusting transitions).
+    var trackLoaded = false;
+    var trackIO = null;
+    function loadTrack() {
+      if (trackLoaded) return;
+      trackLoaded = true;
+      forceEagerLoad(track);
+      if (trackIO) trackIO.disconnect();
+      window.removeEventListener("scroll", trackNearCheck);
+    }
+    function trackNearCheck() {
+      if (slider.getBoundingClientRect().top < window.innerHeight + 600) loadTrack();
+    }
     if ("IntersectionObserver" in window) {
-      var trackIO = new IntersectionObserver(function (entries) {
-        if (entries.some(function (e) { return e.isIntersecting; })) {
-          forceEagerLoad(track);
-          trackIO.disconnect();
-        }
+      trackIO = new IntersectionObserver(function (entries) {
+        if (entries.some(function (e) { return e.isIntersecting; })) loadTrack();
       }, { rootMargin: "600px" });
       trackIO.observe(slider);
-    } else {
-      forceEagerLoad(track);
     }
+    window.addEventListener("scroll", trackNearCheck, { passive: true });
+    trackNearCheck();
+    setTimeout(loadTrack, 4000);
 
     var slides = Array.prototype.slice.call(track.children);
     var dotsWrap = slider.querySelector(".slider-dots");
@@ -567,6 +580,30 @@
   function nav() {
     var n = document.getElementById("nav");
     if (!n) return;
+
+    /* hamburger menu (<=768px) */
+    var toggle = n.querySelector(".nav__toggle");
+    var linksWrap = n.querySelector(".nav__links");
+    if (toggle && linksWrap) {
+      var setOpen = function (open) {
+        n.classList.toggle("menu-open", open);
+        toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      };
+      toggle.addEventListener("click", function (e) {
+        e.stopPropagation();
+        setOpen(!n.classList.contains("menu-open"));
+      });
+      Array.prototype.forEach.call(linksWrap.querySelectorAll("a"), function (a) {
+        a.addEventListener("click", function () { setOpen(false); });
+      });
+      document.addEventListener("click", function (e) {
+        if (n.classList.contains("menu-open") && !n.contains(e.target)) setOpen(false);
+      });
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && n.classList.contains("menu-open")) setOpen(false);
+      });
+    }
+
     var links = Array.prototype.slice.call(n.querySelectorAll('.nav__links a[href^="#"]'));
     var map = links.map(function (a) { return { a: a, sec: document.querySelector(a.getAttribute("href")) }; })
                    .filter(function (x) { return x.sec; });
