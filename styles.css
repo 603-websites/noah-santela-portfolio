@@ -197,7 +197,11 @@ img{ display: block; max-width: 100%; }
 .hero__name-line--accent{
   font-style: italic;
   font-weight: 400;
-  padding: 0 .38em;        /* extend bg box past italic ink overhang */
+  /* the gradient paints only inside this box (background-clip:text), and
+     line-height .88 leaves italic descenders outside it, so pad past the
+     ink overhang on all sides and pull the layout back with the margin */
+  padding: 0 .38em .18em;
+  margin-bottom: -.18em;
   background: linear-gradient(120deg, #e9eaef 0%, #aeb3c4 30%, #5d7fb0 52%, #d6d8df 74%, #8a8b93 100%);
   background-size: 220% 100%;
   -webkit-background-clip: text; background-clip: text;
