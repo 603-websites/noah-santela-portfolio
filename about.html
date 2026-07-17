@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://n8n-production-512d.up.railway.app; form-action 'self' mailto:; base-uri 'self'; object-src 'none'; upgrade-insecure-requests" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://www.websiteupgraderpro.com; form-action 'self' mailto:; base-uri 'self'; object-src 'none'; upgrade-insecure-requests" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>About Noah Santella - Silversmith &amp; Goldsmith | Santella Designs</title>
 <meta name="description" content="Noah Santella is a New Hampshire silversmith and goldsmith who builds jewelry from bars of raw .999 silver and restores heirloom pieces, from stone setting to lapidary recutting." />
@@ -206,6 +206,12 @@
   </svg>
 </template>
 
+<!-- Website Upgrader Pro SaaS integration. Publishable tenant API key, guarded
+     server-side by a per-tenant CORS allowlist + rate limit + honeypot. Set the
+     real key in saas-config.js after Louis provisions the tenant (see
+     SANTELLA_SETUP.md). Loaded as an external file so the page keeps a strict
+     script-src 'self' CSP (no 'unsafe-inline'). Must load before script.js. -->
+<script src="saas-config.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

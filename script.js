@@ -347,28 +347,41 @@
   }
 
   /* ---------- inquiry submission ----------
-     Posts to the inquiry endpoint. Success is shown ONLY on a genuine 2xx
-     response. On any failure (non-2xx, network error, timeout) we surface an
-     honest error asking the visitor to email directly, rather than faking a
-     success or silently hijacking the tab with a mailto: redirect.
-     NOTE: the endpoint below is the legacy unauthenticated n8n webhook. The
-     real fix is an authenticated, server-rate-limited endpoint tracked in
-     SCRUM-270; the client-side hardening here is a best-effort deterrent. */
-  var INQUIRY_ENDPOINT = "https://n8n-production-512d.up.railway.app/webhook/santella-inquiry";
+     Posts to the Website Upgrader Pro SaaS contact endpoint
+     (POST /api/v1/contact), authenticated with the tenant's publishable
+     x-api-key and guarded server-side by a per-tenant CORS allowlist and
+     rate limit. This retires the legacy unauthenticated n8n webhook
+     (SCRUM-220 / SCRUM-270). Success is shown ONLY on a genuine 2xx response.
+     On any failure (missing config, non-2xx, network error, timeout) we
+     surface an honest error asking the visitor to email directly, rather than
+     faking a success or silently hijacking the tab with a mailto: redirect.
+     Config (base + publishable apiKey) lives in the inline window.SANTELLA_SAAS
+     block in the page head. */
   var SEND_ERROR_MSG = "We could not send your inquiry just now. Please email noah@santelladesigns.com directly and Noah will follow up.";
 
   function sendMail(subject, v, onSuccess, onError) {
+    var cfg = window.SANTELLA_SAAS;
     var ctrl = ("AbortController" in window) ? new AbortController() : null;
     var timeoutId = ctrl ? setTimeout(function () { ctrl.abort(); }, 12000) : null;
     function fail() { if (timeoutId) clearTimeout(timeoutId); if (onError) onError(SEND_ERROR_MSG); }
+
+    // No config, no send. Never fake success when we cannot actually deliver.
+    if (!cfg || !cfg.base || !cfg.apiKey) { fail(); return; }
+
+    // The SaaS contact schema accepts name, email, message and an optional
+    // phone. There is no "subject" field, so fold the subject line into the
+    // message body. The honeypot (botcheck) is handled client-side before we
+    // reach here and is not part of the API contract, so it is not sent.
+    var msg = (v.message || "");
+    if (subject) msg = subject + "\n\n" + msg;
+    var payload = { name: v.name || "", email: v.email || "", message: msg };
+    if (v.phone) payload.phone = v.phone;
+
     try {
-      fetch(INQUIRY_ENDPOINT, {
+      fetch(cfg.base + "/api/v1/contact", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          subject: subject, name: v.name || "", email: v.email || "",
-          phone: v.phone || "", message: v.message || "", botcheck: v.botcheck || ""
-        }),
+        headers: { "Content-Type": "application/json", "x-api-key": cfg.apiKey },
+        body: JSON.stringify(payload),
         signal: ctrl ? ctrl.signal : undefined
       }).then(function (r) {
         if (timeoutId) clearTimeout(timeoutId);
