@@ -502,6 +502,25 @@ img{ display: block; max-width: 100%; }
 }
 .contact__email:hover{ color:#fff; border-color: var(--sapphire-glow); }
 
+/* secure payment (PayPal) */
+.contact__pay{
+  display:flex; flex-direction:column; gap:1rem; align-items:flex-start;
+  margin-top:1.6rem; padding-top:1.6rem; width:100%;
+  border-top:1px solid rgba(255,255,255,.07);
+}
+.contact__pay .eyebrow{ margin:0; }
+.contact__pay .section-sub{ margin:0; }
+.btn--paypal{
+  border-color: rgba(58,120,216,.4);
+  background: linear-gradient(180deg, rgba(26,58,107,.5), rgba(16,17,21,.75));
+}
+.btn--paypal:hover{
+  border-color: rgba(58,120,216,.7);
+  color:#fff;
+  box-shadow: 0 0 30px -10px rgba(58,120,216,.55);
+}
+.btn__lock{ flex:none; opacity:.85; }
+
 .form{ display:flex; flex-direction:column; gap:1.5rem; }
 .field{ display:flex; flex-direction:column; gap:.5rem; position:relative; }
 .field label{ font-size:.66rem; letter-spacing:.26em; text-transform:uppercase; color: var(--text-faint); }
