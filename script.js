@@ -7,6 +7,14 @@
   // Honor the visitor's reduced-motion preference (used to pause auto-animations).
   var prefersReducedMotion = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
+  /* ---------- PayPal payment link ----------
+     Paste Noah's PayPal checkout URL between the quotes to switch on the
+     "Pay with PayPal" button in the contact section. Leave it empty and the
+     button stays hidden. This can be a PayPal.me link (paypal.me/<handle>) or a
+     hosted "Payment link / button" URL generated in the PayPal business
+     dashboard. See docs/paypal-setup.md for step-by-step instructions. */
+  var PAYPAL_PAYMENT_LINK = "";
+
   /* ---------- Collection data ---------- */
   var PIECES = [
     {
@@ -667,6 +675,17 @@
     });
   }
 
+  /* ---------- PayPal button ---------- */
+  function paymentLink() {
+    var block = document.querySelector("[data-paypal-block]");
+    if (!block) return;
+    var url = (PAYPAL_PAYMENT_LINK || "").trim();
+    if (!url) return; // no link configured yet -> button stays hidden
+    var a = block.querySelector("[data-paypal-link]");
+    if (a) a.setAttribute("href", url);
+    block.hidden = false;
+  }
+
   /* ---------- init ---------- */
   function init() {
     buildSlider();
@@ -676,6 +695,7 @@
     atmosphere();
     reveals();
     smoothLinks();
+    paymentLink();
     setupForm(document.getElementById("inquiry"), function (vals, onSuccess, onError) {
       sendMail("Commission inquiry for Noah Santella", vals, onSuccess, onError);
     });
