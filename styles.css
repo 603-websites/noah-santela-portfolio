@@ -550,6 +550,9 @@ img{ display: block; max-width: 100%; }
   font-family: var(--serif); font-style:italic; font-size:1rem; color:#c98a8a;
   padding: .6rem 0;
 }
+.form__consent{ font-size:.7rem; letter-spacing:.06em; color: var(--text-faint); margin-top:-.6rem; }
+.form__consent a{ color: var(--text-dim); text-decoration:underline; text-underline-offset:2px; transition: color .4s; }
+.form__consent a:hover{ color: var(--silver); }
 
 /* =========================================================
    FOOTER
