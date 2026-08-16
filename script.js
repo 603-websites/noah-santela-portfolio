@@ -703,3 +703,29 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();
 })();
+
+
+/* Sticky mobile inquire bar. Injected so every page gets it without markup
+   duplication; hidden above 768px. */
+(function () {
+  if (document.getElementById('sd-sticky-cta')) return;
+  var a = document.createElement('a');
+  a.id = 'sd-sticky-cta';
+  var onHome = /(?:^|\/)(index\.html)?$/.test(location.pathname);
+  a.href = onHome ? '#contact' : '/index.html#contact';
+  a.textContent = 'Inquire';
+  a.setAttribute('aria-label', 'Start an inquiry');
+  a.style.cssText = 'display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:999;padding:12px 34px;border-radius:40px;background:rgba(12,13,16,0.92);border:1px solid rgba(201,169,98,0.6);color:#e8dcc0;font-family:Jost,sans-serif;font-size:15px;letter-spacing:0.14em;text-transform:uppercase;text-decoration:none;box-shadow:0 6px 24px rgba(0,0,0,0.45);backdrop-filter:blur(6px)';
+  function mount() {
+    if (!document.body) return;
+    document.body.appendChild(a);
+    function show() { a.style.display = window.innerWidth <= 768 ? 'inline-block' : 'none'; }
+    show();
+    window.addEventListener('resize', show, { passive: true });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', mount);
+  } else {
+    mount();
+  }
+})();
