@@ -1,0 +1,28 @@
+# Cloudflare Pages response headers for santelladesigns.com.
+#
+# This file is inert on GitHub Pages, which cannot set custom response headers
+# at all. It only takes effect once the site is served by Cloudflare Pages, so
+# this branch must not be merged before that cutover happens.
+#
+# Verify after cutover with a real request, not by reading this file:
+#   curl -sSI https://santelladesigns.com | grep -iE \
+#     'strict-transport-security|content-security-policy|x-content-type-options|x-frame-options|referrer-policy'
+
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://umami-production-79fc.up.railway.app; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://oryxtechnologiesllc.com https://umami-production-79fc.up.railway.app; form-action 'self' mailto:; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: accelerometer=(), autoplay=(), camera=(), display-capture=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), usb=(), xr-spatial-tracking=()
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+
+/images/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/uploads/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/og-cover.jpg
+  Cache-Control: public, max-age=86400
