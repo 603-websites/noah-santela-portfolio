@@ -1,0 +1,6 @@
+# GitHub Pages runs Jekyll, which silently refuses to serve any path whose
+# directory begins with an underscore. That is the only reason /_internal/ is
+# not public today. Cloudflare Pages has no Jekyll and would happily serve it,
+# so the exclusion has to be restated here or the migration would quietly
+# publish internal operational docs on the client's own domain.
+/_internal/*  /404.html  404
