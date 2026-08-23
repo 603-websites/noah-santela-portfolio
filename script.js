@@ -298,6 +298,28 @@
     var nameEl = document.getElementById("modal-name");
     var descEl = document.getElementById("modal-desc");
     var current = null;
+    var lastFocus = null;
+    var closeBtn = m.querySelector(".modal__close");
+
+    // Keep keyboard focus inside the open modal (basic focus trap).
+    function focusables() {
+      return Array.prototype.slice.call(m.querySelectorAll(
+        'button, [href], input, textarea, select, [tabindex]:not([tabindex="-1"])'
+      )).filter(function (el) {
+        return !el.disabled && el.offsetParent !== null;
+      });
+    }
+    function onTrap(e) {
+      if (e.key !== "Tab") return;
+      var f = focusables();
+      if (!f.length) return;
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault(); last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault(); first.focus();
+      }
+    }
 
     window.openInquiry = function (idx) {
       var P = window.__pieces || PIECES;
@@ -332,6 +354,9 @@
       m.classList.add("open");
       document.body.classList.add("modal-open");
       document.body.style.overflow = "hidden";
+      lastFocus = document.activeElement;
+      m.addEventListener("keydown", onTrap);
+      if (closeBtn) closeBtn.focus();
     };
     function close() {
       var mediaEl = m.querySelector('.modal__media');
@@ -340,9 +365,13 @@
       Array.prototype.forEach.call(mediaEl.querySelectorAll('.modal__gen'), function (el) { el.remove(); });
       if (imgEl) imgEl.style.display = 'none';
       m.classList.remove("open");
+      m.removeEventListener("keydown", onTrap);
       document.body.classList.remove("modal-open");
       document.body.style.overflow = "";
       setTimeout(function () { m.hidden = true; }, 420);
+      // Return focus to the element that opened the modal.
+      if (lastFocus && typeof lastFocus.focus === "function") lastFocus.focus();
+      lastFocus = null;
     }
     m.querySelectorAll("[data-close]").forEach(function (el) { el.addEventListener("click", close); });
     document.addEventListener("keydown", function (e) { if (e.key === "Escape" && m.classList.contains("open")) close(); });
@@ -670,7 +699,7 @@
         var t = document.querySelector(id);
         if (!t) return;
         e.preventDefault();
-        t.scrollIntoView({ behavior: "smooth", block: "start" });
+        t.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
       });
     });
   }
