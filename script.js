@@ -355,27 +355,35 @@
   }
 
   /* ---------- inquiry submission ----------
-     Posts to the inquiry endpoint. Success is shown ONLY on a genuine 2xx
-     response. On any failure (non-2xx, network error, timeout) we surface an
-     honest error asking the visitor to email directly, rather than faking a
-     success or silently hijacking the tab with a mailto: redirect.
-     NOTE: the endpoint below is the legacy unauthenticated n8n webhook. The
-     real fix is an authenticated, server-rate-limited endpoint tracked in
-     SCRUM-270; the client-side hardening here is a best-effort deterrent. */
-  var INQUIRY_ENDPOINT = "https://n8n-production-512d.up.railway.app/webhook/santella-inquiry";
+     Posts to the platform's authenticated contact endpoint (SCRUM-270 item 1;
+     replaces the legacy unauthenticated n8n webhook, which is being
+     decommissioned). Success is shown ONLY on a genuine 2xx response. On any
+     failure (non-2xx, network error, timeout) we surface an honest error
+     asking the visitor to email directly, rather than faking a success or
+     silently hijacking the tab with a mailto: redirect.
+     The API key is the tenant's publishable key: safe to embed in a static
+     site; the server enforces auth, per-tenant rate limiting and origin
+     checks. Submissions persist to the tenant dashboard even if the owner
+     notification email fails. */
+  var INQUIRY_ENDPOINT = "https://oryxtechnologiesllc.com/api/v1/contact";
+  var INQUIRY_API_KEY = "PASTE_SANTELLA_TENANT_KEY_BEFORE_MERGE";
   var SEND_ERROR_MSG = "We could not send your inquiry just now. Please email noah@santelladesigns.com directly and Noah will follow up.";
 
   function sendMail(subject, v, onSuccess, onError) {
+    // Honeypot: a filled hidden field gets a fake success and no request at
+    // all. The old n8n workflow did this server-side; the platform endpoint
+    // has no honeypot field, so the check moves here.
+    if (v.botcheck) { if (onSuccess) onSuccess(); return; }
     var ctrl = ("AbortController" in window) ? new AbortController() : null;
     var timeoutId = ctrl ? setTimeout(function () { ctrl.abort(); }, 12000) : null;
     function fail() { if (timeoutId) clearTimeout(timeoutId); if (onError) onError(SEND_ERROR_MSG); }
     try {
       fetch(INQUIRY_ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-api-key": INQUIRY_API_KEY },
         body: JSON.stringify({
-          subject: subject, name: v.name || "", email: v.email || "",
-          phone: v.phone || "", message: v.message || "", botcheck: v.botcheck || ""
+          name: v.name || "", email: v.email || "", phone: v.phone || "",
+          message: subject + "\n\n" + (v.message || "")
         }),
         signal: ctrl ? ctrl.signal : undefined
       }).then(function (r) {
