@@ -355,27 +355,40 @@
   }
 
   /* ---------- inquiry submission ----------
-     Posts to the inquiry endpoint. Success is shown ONLY on a genuine 2xx
-     response. On any failure (non-2xx, network error, timeout) we surface an
-     honest error asking the visitor to email directly, rather than faking a
-     success or silently hijacking the tab with a mailto: redirect.
-     NOTE: the endpoint below is the legacy unauthenticated n8n webhook. The
-     real fix is an authenticated, server-rate-limited endpoint tracked in
-     SCRUM-270; the client-side hardening here is a best-effort deterrent. */
-  var INQUIRY_ENDPOINT = "https://n8n-production-512d.up.railway.app/webhook/santella-inquiry";
+     Posts to the Oryx platform contact endpoint, which is authenticated with a
+     per-organization publishable key and rate limited server side. It replaces
+     the legacy unauthenticated n8n webhook, which had reflected CORS and could
+     be posted to by anyone who knew the URL (SCRUM-270).
+
+     Success is shown ONLY on a genuine 2xx response. On any failure (non-2xx,
+     network error, timeout, unprovisioned key) we surface an honest error
+     asking the visitor to email directly, rather than faking a success or
+     silently hijacking the tab with a mailto: redirect. */
+  var SAAS = window.SANTELLA_SAAS || {};
+  var INQUIRY_ENDPOINT = (SAAS.base || "") + "/api/v1/contact";
+  var API_KEY = SAAS.apiKey || "";
   var SEND_ERROR_MSG = "We could not send your inquiry just now. Please email noah@santelladesigns.com directly and Noah will follow up.";
+
+  // The key is only usable once it has been provisioned in the Oryx admin. A
+  // placeholder must fail closed rather than fire a request that cannot work.
+  function keyReady() { return API_KEY.indexOf("wup_") === 0; }
 
   function sendMail(subject, v, onSuccess, onError) {
     var ctrl = ("AbortController" in window) ? new AbortController() : null;
     var timeoutId = ctrl ? setTimeout(function () { ctrl.abort(); }, 12000) : null;
     function fail() { if (timeoutId) clearTimeout(timeoutId); if (onError) onError(SEND_ERROR_MSG); }
+    if (!keyReady()) { fail(); return; }
+    // The endpoint's schema accepts name, email, message and optional phone.
+    // It silently strips unknown fields, so the piece name that used to ride in
+    // "subject" is folded into the message body instead of being lost.
+    var message = subject ? (subject + "\n\n" + (v.message || "")) : (v.message || "");
     try {
       fetch(INQUIRY_ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-api-key": API_KEY },
         body: JSON.stringify({
-          subject: subject, name: v.name || "", email: v.email || "",
-          phone: v.phone || "", message: v.message || "", botcheck: v.botcheck || ""
+          name: v.name || "", email: v.email || "",
+          phone: v.phone || "", message: message
         }),
         signal: ctrl ? ctrl.signal : undefined
       }).then(function (r) {
